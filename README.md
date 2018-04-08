@@ -1,7 +1,7 @@
 LMAOBot
 =======
 
-<img src="https://discordbots.org/api/widget/398413630149885952.svg">
+<img src="https://discordbots.org/api/widget/398413630149885952.svg?sanitize=true">
 
 > A Discord bot with dank memes, and a even danker soundboard.
 

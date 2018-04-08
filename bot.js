@@ -22,15 +22,15 @@ for (const folder of command_folders) {
     if (file.split('.')[1] === 'js')) {
     const command = require(`./commands/${folder}/${file}`);
     client.commands.set(props.help.name, props);
+    }
   }
 }
-}
 
-const sequelize = new Sequelize('database', 'username', 'password', {
-  host: 'localhost',
-  dialect: 'sqlite',
-  logging: false,
-  storage: 'database.sql',
+const sequelize =  new Sequelize('database', 'username', 'password', {
+	host: 'localhost',
+	dialect: 'sqlite',
+	logging: false,
+	storage: 'database.sql',
 });
 
 const Sounds = sequelize.define('sounds', {

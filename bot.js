@@ -29,6 +29,20 @@ fs.readdir('./commands/utility', (err, files) => {
   });
 });
 
+fs.readdir('./commands/games', (err, files) => {
+  if(err) console.error(err);
+
+  let jsFiles = files.filter(f => f.split(".").pop() === "js");
+  if(jsFiles <= 0) return console.log("There are no game commands to load!");
+
+  console.log(`Loading ${jsFiles.length} game commands.`)
+
+  jsFiles.forEach((f, i) => {
+      let props = require(`./commands/game/${f}`);
+      client.commands.set(props.help.name, props);
+  });
+});
+
 fs.readdir('./commands/fun', (err, files) => {
   if(err) console.error(err);
 

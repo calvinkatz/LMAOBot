@@ -22,12 +22,12 @@ const Sounds = sequelize.define('sounds', {
 });
 
     module.exports.run = async (client, message, args) => {
-		process.on('unhandledRejection', console.error)
 		const soundName = args;
 		
 		if(!soundName) return message.channel.send(":x: You need to enter a sound name!")
 		const sound = await Sounds.findOne({ where: { name: soundName } });
 		if(sound) {
+
 			const embed = new Discord.RichEmbed()
 			.setTitle(`Results for "${soundName}"`)
 			.setDescription(`**URL:** ${sound.url}`)

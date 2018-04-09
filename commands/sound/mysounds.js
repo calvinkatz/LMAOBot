@@ -23,7 +23,7 @@ const Sounds = sequelize.define('sounds', {
 
 module.exports.run = async (client, message, args) => {
 
-    const sound = await Sounds.findAll({ where: { username: `${message.author.username}#${message.member.user.discriminator} (${message.author.id})` } });
+    const sound = await Sounds.findAll({ where: { username: { [Sequelize.Op.like]: `% (${message.author.id})` } } });
     const soundString = sound.map(s => s.name).join(", ") || ":x: You don't have any sounds currently added!";
 
     const embed = new Discord.RichEmbed()

@@ -26,7 +26,6 @@ const Sounds = sequelize.define('sounds', {
 });
 
     module.exports.run = async (client, message, args) => {
-		process.on('unhandledRejection', console.error)
         const incorrectUsageSoundEmbed = new Discord.RichEmbed()
 	    .setTitle(":x: Incorrect Usage!")
 	    .setDescription("**Correct usage:** `lmao addsound <sound name> <youtube url>`")
@@ -50,6 +49,7 @@ const Sounds = sequelize.define('sounds', {
 						url: soundURL,
 						username: `${message.author.username}#${message.member.user.discriminator} (${message.author.id})`,
 				});
+
 				return message.channel.send(`Sound **${sound.name}** added!`)
 		} catch (e) {
 				if(e.name === 'SequelizeUniqueConstraintError') return message.channel.send("That sound already exists!");

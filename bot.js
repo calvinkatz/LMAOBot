@@ -19,7 +19,7 @@ const command_folders = fs.readdirSync('./commands');
 for (const folder of command_folders) {
   const command_files = fs.readdirSync(`./commands/${folder}`);
   for (const file of command_files) {
-    if (file.split('.')[1] === 'js')) {
+    if (file.split('.').pop() === 'js') {
     const command = require(`./commands/${folder}/${file}`);
     client.commands.set(props.help.name, props);
     }

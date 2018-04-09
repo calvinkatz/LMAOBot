@@ -10,7 +10,7 @@ module.exports = {
   guild_only: false,
   cooldown: false,
 	// Functions
-	execute: () => {
+	run: () => {
 		https.get(url, (res) => {
 			var body = '';
 

@@ -58,7 +58,6 @@ const Sounds = sequelize.define('sounds', {
 });
 
 
-
 client.on('ready', () => {
   // Setup Sound system
   Sounds.sync();
@@ -86,11 +85,11 @@ client.on('ready', () => {
           supportguild.members.map(member => {
             if (member.roles.has(role)) {
               if (body.indexOf(member.user.id) == -1) {
-                member.removeRole(role, "Removed upvote.")
+                member.removeRole(role, "Removed upvote.");
               }
             } else {
               if (body.indexOf(member.user.id) != -1) {
-                member.addRole(role, "Added upvote.")
+                member.addRole(role, "Added upvote.");
               }
             }
           });

@@ -19,8 +19,8 @@ module.exports = {
       .setImage('http://i0.kym-cdn.com/entries/icons/mobile/000/014/178/AyyyLmao.jpg')
       .setFooter('LMAOBot developed and created by Pete#4164 and Dim#4657');
 
-    message.channel.send({
-      embed
+    msg.reply({
+      embed: embed
     });
   }
 }

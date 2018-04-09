@@ -2,7 +2,7 @@ module.exports = {
   // Information
   name: 'upvote',
   aliases: ['up', '^'],
-  description: '',
+  description: 'Upvote the bot on discordbots.org for exclusive perks! :heart_eyes:',
   // Requirements
   args: false,
   guild_only: false,
@@ -17,6 +17,8 @@ module.exports = {
       .addField("Ok, I want to upvote, but how?", "ha-ha, that one is very easy my friend, all you need to do is click [here](https://discordbots.org/bot/lmaobot) and press the big vote button!")
       .setColor(0x2471a3);
 
-    message.channel.send(embed);
+    msg.reply({
+      embed: embed
+    });
   }
 }

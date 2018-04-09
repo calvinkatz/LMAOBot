@@ -9,7 +9,7 @@ module.exports = {
   cooldown: 0,
   //Function
   run: (client, msg, args) => {
-    message.channel.send({
+    msg.reply({
       embed: {
         title: 'Invite LMAOBot to your Discord Server',
         color: 0x2471a3,
@@ -19,6 +19,6 @@ module.exports = {
           value: "[Here](https://discord.gg/aQ25yFy)"
         }]
       }
-    })
+    });
   }
 }

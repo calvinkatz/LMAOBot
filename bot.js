@@ -8,6 +8,7 @@ const youtube = new YouTube('AIzaSyANS8AVVuSxUOifKikrllcTMRewOfMTFr4');
 const voteapi = "https://discordbots.org/api/bots/398413630149885952/votes?onlyids=true";
 const Sequelize = require('sequelize');
 const fs = require('fs');
+const https = require('https');
 process.on('unhandledRejection', console.error)
 
 // Setup Discord.js Client/Bot
@@ -114,40 +115,56 @@ client.on('ready', () => {
   }, 600000);
 });
 
-client.on('message', message => {
+client.on('message', msg => {
+  if (!msg.content.startsWith(client.config.prefix) || msg.author.client) return;
 
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
+  // Convert input into command name & args
+  const args = msg.content.slice(client.config.prefix.length).split(/ +/);
+  const command_name = args.shift().toLowerCase();
 
-  const input = message.content.slice(prefix.length + 1).split(' ');
-  const command = input.shift();
-  const args = input.join(' ');
+  // Find a command by it's name or aliases
+  const command = client.commands.get(command_name) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command_name));
+  if (!command) return;
 
-  let cmd = client.commands.get(command); //let cmd = client.commands.get(command.slice(prefix.length));
-  if (cmd) cmd.run(client, message, args)
+  // Check that command requirements are met
+  if (command.args && !args.length) {
+    return msg.reply(' you didn\'t provide any arguments!');
+  }
 
+  if (command.guild_only && msg.channel.type !== 'text') {
+    return msg.reply(' I can only execute that command inside servers!');
+  }
+
+  try {
+    command.run(client, msg, args);
+  } catch (error) {
+    console.error(error);
+    msg.reply(' there was an error in trying to execute that command!');
+  }
 });
 
 client.on('guildCreate', guild => {
-  let defaultChannel = "";
-  guild.channels.forEach((channel) => {
-    if (channel.type == "text" && defaultChannel == "") {
-      if (channel.permissionsFor(guild.me).has("SEND_MESSAGES")) {
-        defaultChannel = channel;
-      }
-    }
-  })
-  if (!defaultChannel) return;
-  //defaultChannel will be the channel object that it first finds the bot has permissions for
-  const embed = new Discord.RichEmbed()
-    .setTitle('Howdy folks!')
-    .setDescription(`thnx veri much for inViting mi to **${guild.name}**!!1! I'm **${client.config.prefix}Bot**, a f4ntast1c b0t created by **Pete#4164** and **Dim#8080**! \n \nTo look at the list of my commands, type __**'${client.config.prefix} help'**__! \n \nHey you! yeah.. you!11! W4nt to upv0te LMAOBot to gain __***EXCLUSIVE***__ features such as upvote only commands, and a sexy role on the support server?!?!?11 You can do so by typing **'${client.config.prefix} upvote'** in chat! Thnx xoxo :heart: \n \nIf you're having any problems, feel free to join my support server, just type **'${client.config.prefix} invite'**!`)
-    .setColor(0x2471a3)
+  // Get channel in which bot is allowed to msg
+  let default_channel = guild.channels.find(channel => channel.type === 'text' && channel.permissionsFor(guild.me).has('SEND_MESSAGES'));
+  if (!default_channel) return;
 
-  defaultChannel.send({
-    embed
+  default_channel.send({
+    embed: {
+      color: 0x2471a3,
+      author: {
+        name: bot.user.username,
+        icon_url: bot.user.avatarURL,
+      },
+      title: 'Howdy folks!',
+      url: 'https://discord.js.org/#/',
+      description: `Thnx veri much for inViting mi to **${guild.name}**!!1! I'm **LMAOBot**, a f4ntast1c b0t developed by *${client.config.developers.join(", ")}*! \n \nTo look at the list of my commands, type __**'${client.config.prefix} help'**__! \n \nHey you! yeah.. you!11! W4nt to upv0te LMAOBot to gain __***EXCLUSIVE***__ features such as upvote only commands, and a sexy role on the support server?!?!?11 You can do so by typing **'${client.config.prefix} upvote'** in chat! Thnx xoxo :heart: \n \nIf you're having any problems, feel free to join my support server [here](${client.config.support_server})!`,
+      timestamp: new Date(),
+      footer: {
+        icon_url: bot.user.avatarURL,
+        text: bot.config.embed.footer,
+      },
+    },
   });
-
-
 });
 
 client.login(process.env.TOKEN);

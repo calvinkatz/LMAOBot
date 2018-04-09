@@ -1,8 +1,5 @@
+// Import anything and everything required
 const Discord = require('discord.js');
-const client = new Discord.Client({
-  disabledEvents: ['TYPING_START'],
-});
-const prefix = "lmao"
 const snekfetch = require('snekfetch');
 const ytdl = require('ytdl-core');
 const Util = require('discord.js');
@@ -13,26 +10,38 @@ const Sequelize = require('sequelize');
 const fs = require('fs');
 process.on('unhandledRejection', console.error)
 
-client.commands = new Discord.Collection();
+// Setup Discord.js Client/Bot
+const client = new Discord.Client({
+  disabledEvents: ['TYPING_START'],
+});
 
+// Setup Client's configuration
+client.config = require('./configs/bot.json');
+
+// Setup Client's commands
+client.commands = new Discord.Collection();
 const command_folders = fs.readdirSync('./commands');
 for (const folder of command_folders) {
   const command_files = fs.readdirSync(`./commands/${folder}`);
   for (const file of command_files) {
-    if (file.split('.')[1] === 'js')) {
-    const command = require(`./commands/${folder}/${file}`);
-    client.commands.set(props.help.name, props);
+    if (file.split('.').pop() === 'js') {
+      const command = require(`./commands/${folder}/${file}`);
+      client.commands.set(command.name, command);
     }
   }
 }
 
-const sequelize =  new Sequelize('database', 'username', 'password', {
-	host: 'localhost',
-	dialect: 'sqlite',
-	logging: false,
-	storage: 'database.sql',
+
+// Setup SQL database conneciton
+const sequelize = new Sequelize('database', 'username', 'password', {
+  host: 'localhost',
+  dialect: 'sqlite',
+  logging: false,
+  storage: 'database.sql',
 });
 
+
+// Setup Sound manager
 const Sounds = sequelize.define('sounds', {
   name: {
     type: Sequelize.STRING,
@@ -47,52 +56,18 @@ const Sounds = sequelize.define('sounds', {
   },
 });
 
-client.once('ready', () => {
-  Sounds.sync();
-});
 
-client.on('message', message => {
-
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
-
-  const input = message.content.slice(prefix.length + 1).split(' ');
-  const command = input.shift();
-  const args = input.join(' ');
-
-  let cmd = client.commands.get(command); //let cmd = client.commands.get(command.slice(prefix.length));
-  if (cmd) cmd.run(client, message, args)
-
-});
-
-client.on('guildCreate', guild => {
-  let defaultChannel = "";
-  guild.channels.forEach((channel) => {
-    if (channel.type == "text" && defaultChannel == "") {
-      if (channel.permissionsFor(guild.me).has("SEND_MESSAGES")) {
-        defaultChannel = channel;
-      }
-    }
-  })
-  if (!defaultChannel) return;
-  //defaultChannel will be the channel object that it first finds the bot has permissions for
-  const embed = new Discord.RichEmbed()
-    .setTitle('Howdy folks!')
-    .setDescription(`thnx veri much for inViting mi to **${guild.name}**!!1! I'm **LMAOBot**, a f4ntast1c b0t created by **Pete#4164** and **Dim#8080**! \n \nTo look at the list of my commands, type __**'lmao help'**__! \n \nHey you! yeah.. you!11! W4nt to upv0te LMAOBot to gain __***EXCLUSIVE***__ features such as upvote only commands, and a sexy role on the support server?!?!?11 You can do so by typing **'lmao upvote'** in chat! Thnx xoxo :heart: \n \nIf you're having any problems, feel free to join my support server, just type **'lmao invite'**!`)
-    .setColor(0x2471a3)
-
-  defaultChannel.send({
-    embed
-  })
-
-
-})
 
 client.on('ready', () => {
-  client.shard.broadcastEval('this.guilds.size').then(results => {
-    client.user.setActivity(`lmao help | ${results.reduce((prev, val) => prev + val, 0)} servers`);
-  })
-  console.log('Ready sir..');
+  // Setup Sound system
+  Sounds.sync();
 
+  // Setup Bot
+  client.shard.broadcastEval('this.guilds.size').then(results => {
+    client.user.setActivity(`${client.config.prefix} help | ${results.reduce((prev, val) => prev + val, 0)} servers`);
+  });
+
+  console.log('Ready sir...');
 
   setInterval(async () => {
     try {
@@ -134,9 +109,45 @@ client.on('ready', () => {
         .then(() => console.log('Updated discordbots.org stats.'))
         .catch(err => console.error(`Whoops something went wrong: ${err.body}`));
 
-      client.user.setActivity(`lmao help | ${results.reduce((prev, val) => prev + val, 0)} servers`)
-    })
+      client.user.setActivity(`${client.config.prefix} help | ${results.reduce((prev, val) => prev + val, 0)} servers`)
+    });
   }, 600000);
+});
+
+client.on('message', message => {
+
+  if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+  const input = message.content.slice(prefix.length + 1).split(' ');
+  const command = input.shift();
+  const args = input.join(' ');
+
+  let cmd = client.commands.get(command); //let cmd = client.commands.get(command.slice(prefix.length));
+  if (cmd) cmd.run(client, message, args)
+
+});
+
+client.on('guildCreate', guild => {
+  let defaultChannel = "";
+  guild.channels.forEach((channel) => {
+    if (channel.type == "text" && defaultChannel == "") {
+      if (channel.permissionsFor(guild.me).has("SEND_MESSAGES")) {
+        defaultChannel = channel;
+      }
+    }
+  })
+  if (!defaultChannel) return;
+  //defaultChannel will be the channel object that it first finds the bot has permissions for
+  const embed = new Discord.RichEmbed()
+    .setTitle('Howdy folks!')
+    .setDescription(`thnx veri much for inViting mi to **${guild.name}**!!1! I'm **${client.config.prefix}Bot**, a f4ntast1c b0t created by **Pete#4164** and **Dim#8080**! \n \nTo look at the list of my commands, type __**'${client.config.prefix} help'**__! \n \nHey you! yeah.. you!11! W4nt to upv0te LMAOBot to gain __***EXCLUSIVE***__ features such as upvote only commands, and a sexy role on the support server?!?!?11 You can do so by typing **'${client.config.prefix} upvote'** in chat! Thnx xoxo :heart: \n \nIf you're having any problems, feel free to join my support server, just type **'${client.config.prefix} invite'**!`)
+    .setColor(0x2471a3)
+
+  defaultChannel.send({
+    embed
+  });
+
+
 });
 
 client.login(process.env.TOKEN);

@@ -1,16 +1,7 @@
 const https = require('https');
 
-module.exports = {
-  // Information
-  name: 'deepfry',
-  aliases: [],
-  description: "",
-  // Requirements
-  args: false,
-  guild_only: false,
-  cooldown: false,
+module.exports.run = (client, message, args) => {
 	// Functions
-	execute: () => {
 		https.get(url, (res) => {
 			var body = '';
 
@@ -35,5 +26,11 @@ module.exports = {
 				console.log("Got an error: ", e);
 			})
 		});
-	}
+}
+
+module.exports.help = {
+    // information
+    name: 'deepfry',
+    aliases: [],
+    description: "",
 }

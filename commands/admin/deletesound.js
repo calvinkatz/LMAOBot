@@ -25,7 +25,7 @@ const Sounds = sequelize.define('sounds', {
 		process.on('unhandledRejection', console.error)
 		const soundName = args;
 		if(!soundName) return message.channel.send(":x: You need to enter a sound to delete!")
-		if(!message.author.id === "223919574536552449" && !message.author.id === "219204779426054146") return message.channel.send(":x: Only bot developers can delete sounds!");
+		if(!message.author.id === "223919574536552449" && !message.author.id === "219204779426054146" && !message.author.id === "198255568882761728" && !message.author.id === "199810482574458881") return message.channel.send(":x: Only bot developers can delete sounds!");
 		const rowCount = await Sounds.destroy({ where: { name: soundName } });
 		if(!rowCount) return message.channel.send(`Sound **${soundName}** does not exist.`)
 		return message.channel.send(`Sound **${soundName}** deleted.`)

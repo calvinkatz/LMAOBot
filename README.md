@@ -15,7 +15,7 @@ You can contact us, core developers, via the following:
 
 * [Support Server](https://discordapp.com/invite/aQ25yFy)
 	
-# Invite
+# Invitting The Bot
 
 There are multiple ways to invite our bot to your servers!
 
@@ -28,7 +28,7 @@ There are multiple ways to invite our bot to your servers!
 > Fork, edit and commit!
 
 
-# Run The Bot
+# Running The Bot
 1. You'll need to setup Node.js, Python 2.7* and a Local Server!
 
 	* [Node.js](https://nodejs.org/en/)

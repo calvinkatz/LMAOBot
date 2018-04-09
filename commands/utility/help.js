@@ -1,8 +1,8 @@
 module.exports = {
   // Information
   name: 'help',
-  aliases: ['h'],
-  description: 'Information on the bot and it\'s usage.',
+  aliases: ['h', '?'],
+  description: 'Information on the bot\'s usage.',
   // Requirements
   args: false,
   guild_only: false,

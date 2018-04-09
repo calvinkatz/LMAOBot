@@ -71,14 +71,14 @@ client.on('ready', () => {
 
   setInterval(async () => {
     try {
-      let res = await require('snekfetch').get(`https://discordbots.org/api/bots/398413630149885952/votes?onlyids=1`)
-        .set('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5ODQxMzYzMDE0OTg4NTk1MiIsImJvdCI6dHJ1ZSwiaWF0IjoxNTE1NDc5MzAwfQ.fZOBCz8fBAS-24EeC0uxOwlvs6LLqKTPgW-cpBQl1Z8').query('onlyids', true)
-      if (!res) return console.error('discordbots.org> Checking upvotes returned no result.')
+      let res = await require('snekfetch').get(`https://discordbots.org/api/bots/398413630149885952/votes?onlyids=1`).set('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5ODQxMzYzMDE0OTg4NTk1MiIsImJvdCI6dHJ1ZSwiaWF0IjoxNTE1NDc5MzAwfQ.fZOBCz8fBAS-24EeC0uxOwlvs6LLqKTPgW-cpBQl1Z8').query('onlyids', true);
+      if (!res) return console.error('discordbots.org> Checking upvotes returned no result.');
 
       if (res.status == 200) {
         let body = res.body;
         let supportguild = client.guilds.get("399121674198581248");
         let role = "403490721421590529";
+
         console.log("discordbots.org> Checking upvotes for roles.");
 
         if (supportguild) {
@@ -95,7 +95,7 @@ client.on('ready', () => {
           });
         }
       } else {
-        console.error('discordbots.org> Checking upvotes returned status code: ' + res.status)
+        console.error('discordbots.org> Checking upvotes returned status code: ' + res.status);
       }
     } catch (err) {
       console.error('discordbots.org> Checking upvotes returned error: ' + err)

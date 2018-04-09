@@ -27,8 +27,20 @@ There are multiple ways to invite our bot to your servers!
 
 > Fork, edit and commit!
 
-This repository contains everything you need, from sql db to node modules, the only thing you'll need to setup yourself is Node.js, Python 2.7* and a Local Server!
 
-* [Node.js](https://nodejs.org/en/)
-* [Python 2.7*](https://www.python.org/)
-* [Local Server](https://www.apachefriends.org/index.html)
+# Run The Bot
+1. You'll need to setup Node.js, Python 2.7* and a Local Server!
+
+	* [Node.js](https://nodejs.org/en/)
+	* [Python 2.7*](https://www.python.org/)
+	* [Local Server](https://www.apachefriends.org/index.html)
+
+2. Once you have your local server up and running, import the Bot's SQL DB.
+
+> You'll find the file under: `database.sql`
+
+3. Once you have Node.js & Python 2.7* setup, run the following command in the project's head:
+
+> npm install
+
+Once you've finished everything above you'll be able to run the bot!

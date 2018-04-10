@@ -13,6 +13,6 @@ module.exports = {
   cooldown: 0,
   //Function
   run: (client, msg, args) => {
-    msg.channel.send("You rolled a " + Math.floor(Math.random() * 100) + 1 + "!");
+    msg.channel.send("You rolled a " + (Math.floor(Math.random() * 100) + 1) + "!");
   }
 }

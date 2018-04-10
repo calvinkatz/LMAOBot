@@ -1,3 +1,6 @@
+
+const https = require('https');
+const url = 'https://www.reddit.com/r/DeepFriedMemes/hot/.json?limit=52'
 module.exports = {
   // Information
   name: 'deepfry',
@@ -7,10 +10,10 @@ module.exports = {
   args: false,
   guild_only: false,
   cooldown: 0,
-  // Functions
-  run: () => {
-    https.get(url, (res) => {
-      var body = '';
+	// Functions
+	run: (client, message, args) => {
+		https.get(url, (res) => {
+			var body = '';
 
       res.on('data', (chunk) => {
         body += chunk;

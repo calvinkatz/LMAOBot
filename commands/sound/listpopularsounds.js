@@ -22,7 +22,6 @@ const Sounds = sequelize.define('sounds', {
 });
 
 module.exports.run = async (client, message, args) => {
-	process.on('unhandledRejection', console.error)
 	const soundList = await Sounds.findAll({ attributes: ['name', 'usage_count'] });
 	const soundString = soundList.map(s => s.name).join(", ").slice(0, 2048) || ':x: There are no sounds currently set!';
 	const embed = new Discord.RichEmbed()

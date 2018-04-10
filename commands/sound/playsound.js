@@ -25,7 +25,6 @@ const Sounds = sequelize.define('sounds', {
 });
 
 module.exports.run = async (client, message, args) => {
-	process.on('unhandledRejection', console.error)
         const soundName = args;
         
         if(!soundName) return message.channel.send(":x: You need to enter a sound name to play!")

@@ -14,7 +14,7 @@ module.exports.run = async (client, message, args) => {
     .setDescription('Nice try. Only bot developers can run this command!')
     .setColor(0x2471a3)
     
-    if(message.author.id !== '223919574536552449' && message.author.id !== '219204779426054146') return message.channel.send({embed});
+    if(message.author.id !== '223919574536552449' && message.author.id !== '219204779426054146' && message.author.id !== '198255568882761728' && message.author.id !== '199810482574458881') return message.channel.send({embed});
     try {
       const code = evalargs.join(" ");
       let evaled = await eval(code);

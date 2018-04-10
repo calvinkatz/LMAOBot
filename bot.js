@@ -1,4 +1,5 @@
-// Import anything and everything required
+// Import anything and everything required throughout the project
+// *****************************************************************************
 const Discord = require('discord.js');
 const snekfetch = require('snekfetch');
 const ytdl = require('ytdl-core');
@@ -12,12 +13,14 @@ const https = require('https');
 process.on('unhandledRejection', console.error)
 
 // Setup Discord.js Client/Bot
+// *****************************************************************************
 const client = new Discord.Client({
   disabledEvents: ['TYPING_START'],
 });
 
 // Setup Client's configuration
 client.config = require('./configs/bot.json');
+client.cooldowns = new Discord.Collection();
 
 // Setup Client's commands
 client.commands = new Discord.Collection();
@@ -34,6 +37,7 @@ for (const folder of command_folders) {
 
 
 // Setup Client's custom function
+// *****************************************************************************
 
 
 /**
@@ -51,6 +55,7 @@ client.is_developer = (id) => {
 
 
 // Setup SQL database conneciton
+// *****************************************************************************
 const sequelize = new Sequelize('database', 'username', 'password', {
   host: 'localhost',
   dialect: 'sqlite',
@@ -60,6 +65,7 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 
 
 // Setup Sound manager
+// *****************************************************************************
 const Sounds = sequelize.define('sounds', {
   name: {
     type: Sequelize.STRING,
@@ -74,7 +80,8 @@ const Sounds = sequelize.define('sounds', {
   },
 });
 
-
+// Setup Client's events handlers
+// *****************************************************************************
 client.on('ready', () => {
   // Setup Sound system
   Sounds.sync();
@@ -142,13 +149,13 @@ client.on('message', msg => {
   const command = client.commands.get(command_name) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command_name));
   if (!command) return;
 
-  // Check that command requirements are met
-  if (command.args && !args.length) {
-    return msg.reply(' you didn\'t provide any arguments!');
+  // Check that command arguments requirements are met
+  if ('args' in command && command.args.req && args.length >= command.args.min) {
+    return msg.reply(` you didn't provide the required arguments!\nUsage: \`${client.config.prefix} ${command.name} ` + 'usage' in command ? command.usage : '' + `\``);
   }
 
-  // Check whether it's a developer
-  if (command.dev_only && !client.is_developer(msg.author.id)) return msg.reply({
+  // Check whether it's a developer only command
+  if ('dev_only' in command && command.dev_only && !client.is_developer(msg.author.id)) return msg.reply({
     embed: {
       color: 0x2471a3,
       title: ':x: Access Denied!!!',
@@ -156,7 +163,8 @@ client.on('message', msg => {
     }
   });
 
-  if (command.guild_only && msg.channel.type !== 'text') {
+  // Check whether it's a guild only command
+  if ('guild_only' in command && command.guild_only && msg.channel.type !== 'text') {
     return msg.reply({
       embed: {
         color: 0x2471a3,
@@ -166,12 +174,40 @@ client.on('message', msg => {
     });
   }
 
-  try {
-    command.run(client, msg, args);
-  } catch (error) {
-    console.error(error);
-    msg.reply(' there was an error in trying to execute that command!');
+  // Check whether command is on cooldown for user
+  if ('cooldown' in command && command.cooldown >= 1) {
+    if (!client.cooldowns.has(command.name)) {
+      client.cooldowns.set(command.name, new Discord.Collection());
+    }
+
+    const now = Date.now();
+    const timestamps = client.cooldowns.get(command.name);
+    const cooldown = (command.cooldown || 1) * 1000;
+
+    if (!timestamps.has(msg.author.id)) {
+      timestamps.set(msg.author.id, now);
+      setTimeout(() => timestamps.delete(msg.author.id), cooldown);
+    } else if (now < expirationTime) {
+      return msg.reply({
+        embed: {
+          color: 0x2471a3,
+          title: ':x: Command On Cooldown!!!',
+          description: `Please wait ` + (timestamps.get(msg.author.id) + cooldown - now) / 1000 + ` second(s) before reusing the \`${command.name}\` command.`
+        }
+      });
+    }
+
+    timestamps.set(msg.author.id, now);
+    setTimeout(() => timestamps.delete(msg.author.id), cooldown);
   }
+}
+
+try {
+  command.run(client, msg, args);
+} catch (error) {
+  console.error(error);
+  msg.reply(' there was an error in trying to execute that command!');
+}
 });
 
 client.on('guildCreate', guild => {

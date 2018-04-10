@@ -31,7 +31,11 @@ module.exports = {
   description: 'Add a sound to the bot\'s sound board.',
   usage: '<sound name> <youtube url>',
   // Requirements
-  args: true,
+  args: {
+    req: true,
+    min: 2
+  },
+  dev_only: false,
   guild_only: false,
   cooldown: 0,
   //Function

@@ -13,7 +13,7 @@ module.exports = {
   cooldown: 0,
   //Function
   run: (client, msg, args) => {
-    const evalargs = message.content.split(" ").slice(2);
+    const evalargs = msg.content.split(" ").slice(2);
 
     const clean = text => {
       if (typeof(text) === "string")
@@ -28,11 +28,11 @@ module.exports = {
 
       if (typeof evaled !== "string") evaled = require("util").inspect(evaled).slice(0, 1950);
 
-      message.channel.send(clean(evaled), {
+      msg.reply(clean(evaled), {
         code: "xl"
       });
     } catch (err) {
-      message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
+      msg.reply(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
     }
   }
 }

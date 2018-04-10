@@ -1,6 +1,6 @@
-
 const https = require('https');
-const url = 'https://www.reddit.com/r/DeepFriedMemes/hot/.json?limit=52'
+const url = 'https://www.reddit.com/r/DeepFriedMemes/hot/.json?limit=52';
+
 module.exports = {
   // Information
   name: 'deepfry',
@@ -10,10 +10,10 @@ module.exports = {
   args: false,
   guild_only: false,
   cooldown: 0,
-	// Functions
-	run: (client, message, args) => {
-		https.get(url, (res) => {
-			var body = '';
+  // Functions
+  run: (client, message, args) => {
+    https.get(url, (res) => {
+      var body = '';
 
       res.on('data', (chunk) => {
         body += chunk;
@@ -21,22 +21,20 @@ module.exports = {
 
       res.on('end', () => {
         var response = JSON.parse(body);
-        var index = Math.floor(Math.random() * 51) + 1;
-        var image = response.data.children[index].data.preview.images[0].source.url
-        var title = response.data.children[index].data.title;
-        var link_to_post = "https://reddit.com" + response.data.children[index].data.permalink;
+        var index = response.data.children[Math.floor(Math.random() * 51) + 1].data;
+        var image = index.preview.images[0].source.url
+        var title = index.title;
+        var link_to_post = "https://reddit.com" + index.permalink;
         const embed = new Discord.RichEmbed()
           .setTitle("/r/DeepFriedMemes")
           .setImage(image)
           .setColor(0x00AE86)
           .setDescription(`[${title}](${link_to_post})`)
           .setURL("https://reddit.com/r/deepfriedmemes");
-        message.channel.send({
-          embed
-        });
+        message.channel.send(embed);
       }).on('error', function(e) {
         console.log("Got an error: ", e);
       })
     });
-  }
+  },
 }

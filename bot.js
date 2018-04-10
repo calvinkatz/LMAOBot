@@ -151,11 +151,11 @@ client.on('message', msg => {
 
   // Check that command arguments requirements are met
   if ('args' in command && command.args.req && args.length >= command.args.min) {
-    return msg.reply(` you didn't provide the required arguments!\nUsage: \`${client.config.prefix} ${command.name} ` + 'usage' in command ? command.usage : '' + `\``);
+    return msg.channel.send(` you didn't provide the required arguments!\nUsage: \`${client.config.prefix} ${command.name} ` + 'usage' in command ? command.usage : '' + `\``);
   }
 
   // Check whether it's a developer only command
-  if ('dev_only' in command && command.dev_only && !client.is_developer(msg.author.id)) return msg.reply({
+  if ('dev_only' in command && command.dev_only && !client.is_developer(msg.author.id)) return msg.channel.send({
     embed: {
       color: 0x2471a3,
       title: ':x: Access Denied!!!',
@@ -165,7 +165,7 @@ client.on('message', msg => {
 
   // Check whether it's a guild only command
   if ('guild_only' in command && command.guild_only && msg.channel.type !== 'text') {
-    return msg.reply({
+    return msg.channel.send({
       embed: {
         color: 0x2471a3,
         title: ':x: Server Command!!!',
@@ -186,13 +186,13 @@ client.on('message', msg => {
 
     if (!timestamps.has(msg.author.id)) {
       timestamps.set(msg.author.id, now);
-      setTimeout(() => timestamps.delete(msg.author.id), cooldown);
-    } else if (now < expirationTime) {
-      return msg.reply({
+      return setTimeout(() => timestamps.delete(msg.author.id), cooldown);
+    } else if (now < timestamps.get(message.author.id) + cooldown) {
+      return msg.channel.send({
         embed: {
           color: 0x2471a3,
           title: ':x: Command On Cooldown!!!',
-          description: `Please wait ` + (timestamps.get(msg.author.id) + cooldown - now) / 1000 + ` second(s) before reusing the \`${command.name}\` command.`
+          description: `Please wait ` + (now - timestamps.get(msg.author.id)) / 1000 + ` second(s) before reusing the \`${command.name}\` command.`
         }
       });
     }
@@ -206,7 +206,7 @@ try {
   command.run(client, msg, args);
 } catch (error) {
   console.error(error);
-  msg.reply(' there was an error in trying to execute that command!');
+  msg.channel.send(' there was an error in trying to execute that command!');
 }
 });
 

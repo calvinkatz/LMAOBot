@@ -13,7 +13,7 @@ module.exports = {
   cooldown: 0,
   //Function
   run: (client, msg, args) => {
-    msg.reply({
+    msg.channel.send({
       embed: {
         title: 'Invite LMAOBot to your Discord Server',
         color: 0x2471a3,

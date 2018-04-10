@@ -28,11 +28,11 @@ module.exports = {
 
       if (typeof evaled !== "string") evaled = require("util").inspect(evaled).slice(0, 1950);
 
-      msg.reply(clean(evaled), {
+      msg.channel.send(clean(evaled), {
         code: "xl"
       });
     } catch (err) {
-      msg.reply(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
+      msg.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
     }
   }
 }

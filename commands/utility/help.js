@@ -10,16 +10,15 @@ module.exports = {
   //Function
   run: (client, msg, args) => {
     if (!args.length) {
-      msg.reply({
+      msg.channel.send({
         embed: {
           color: 0x2471a3,
           author: {
             name: bot.user.username,
             icon_url: bot.user.avatarURL,
           },
-          title: 'This is an embed',
-          url: 'https://discord.js.org/#/',
-          description: 'Computer is a Discord bot for general usage made in Node.js!',
+          title: 'Help Menu',
+          description: `The prefix for my commands is ${client.config.prefix}.\nUsing a command would look like this: ${client.config.prefix} <command name>`,
           fields: [{
             name: 'Commands',
             value: '*' + bot.commands.keyArray().join(', ') + '*',
@@ -33,8 +32,9 @@ module.exports = {
       });
     } else {
       const command = bot.commands.get(args[0]) || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
-
       if (!command) return;
+
+      // TODO Add more information on command
 
       // Setup fields
       const fields = [{
@@ -42,14 +42,14 @@ module.exports = {
         value: `Requires Arguments: *${command.args}* | Server Command: *${command.guild_only}*` + (command.cooldown >= 1) ? ` | Cooldown: *${command.cooldown}*` : '';,
       }];
 
-      if (command.aliases) {
+      if ('aliases' in command) {
         fields.push({
           name: 'Command Aliases',
           value: '*' + command.aliases.join(', ') + '*',
         });
       }
 
-      msg.reply({
+      msg.channel.send({
         embed: {
           color: 3447003,
           author: {
@@ -57,7 +57,6 @@ module.exports = {
             icon_url: bot.user.avatarURL,
           },
           title: bot.config.prefix + command.name + ' ' + (command.usage ? command.usage : ''),
-          url: 'https://discord.js.org/#/',
           description: command.description,
           fields: fields,
           timestamp: new Date(),

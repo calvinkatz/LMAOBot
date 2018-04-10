@@ -3,7 +3,7 @@ module.exports = {
   name: '8ball',
   aliases: ['8'],
   description: 'Get a eight ball\'s response.',
-  usage: '<sound name> <youtube url>',
+  usage: '',
   // Requirements
   args: {
     req: false,
@@ -31,6 +31,6 @@ module.exports = {
   ],
   //Function
   run: (client, msg, args) => {
-    msg.reply(this.responses[Math.floor(Math.random() * this.responses.length)]);
+    msg.channel.send(this.responses[Math.floor(Math.random() * this.responses.length)]);
   }
 }

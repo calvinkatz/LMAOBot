@@ -21,7 +21,7 @@ module.exports = {
       .addField("Ok, I want to upvote, but how?", "ha-ha, that one is very easy my friend, all you need to do is click [here](https://discordbots.org/bot/lmaobot) and press the big vote button!")
       .setColor(0x2471a3);
 
-    msg.reply({
+    msg.channel.send({
       embed: embed
     });
   }

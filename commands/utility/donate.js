@@ -4,7 +4,11 @@ module.exports = {
   aliases: ['$'],
   description: 'Information on how you can support us and this dank bot! :heart:',
   // Requirements
-  args: false,
+  args: {
+    req: false,
+    min: 0
+  },
+  dev_only: false,
   guild_only: false,
   cooldown: 0,
   //Function

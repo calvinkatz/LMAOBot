@@ -1,14 +1,27 @@
-const Discord = require('discord.js');
-module.exports.run = (client, message, args) => {
+module.exports = {
+  // Information
+  name: 'say',
+  aliases: [''],
+  description: 'LMAOBot will say something for you.',
+  usage: '',
+  // Requirements
+  args: {
+    req: false,
+    min: 0
+  },
+  dev_only: false,
+  guild_only: false,
+  cooldown: 0,
+  //Function
+  run: (client, msg, args) => {
     const embed = new Discord.RichEmbed()
-	.setTitle(":x: You need to give me something to say!")
-	.setDescription("Correct usage: `lmao say <what you want lmaobot to say>`!")
-    .setColor(0xff0000)
-    
-    if(!args) return message.channel.send({embed});
-    message.channel.send(args);
-}
+      .setTitle(":x: You need to give me something to say!")
+      .setDescription("Correct usage: `lmao say <what you want lmaobot to say>`!")
+      .setColor(0xff0000)
 
-module.exports.help = {
-    name: "say"
+    if (!args) return msg.channel.send({
+      embed: embed
+    });
+    msg.channel.send(args);
+  }
 }

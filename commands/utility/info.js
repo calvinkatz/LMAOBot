@@ -4,7 +4,11 @@ module.exports = {
   aliases: ['about', '%'],
   description: 'Information on the bot.',
   // Requirements
-  args: false,
+  args: {
+    req: false,
+    min: 0
+  },
+  dev_only: false,
   guild_only: false,
   cooldown: 0,
   //Function

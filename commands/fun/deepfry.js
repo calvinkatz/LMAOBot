@@ -1,11 +1,8 @@
-const https = require('https');
-const url = 'https://www.reddit.com/r/DeepFriedMemes/hot/.json?limit=52';
-
 module.exports = {
   // Information
   name: 'deepfry',
-  aliases: [],
-  description: "",
+  aliases: ['dp'],
+  description: "Get some deep fired memes.",
   // Requirements
   args: {
     req: false,
@@ -14,9 +11,11 @@ module.exports = {
   dev_only: false,
   guild_only: false,
   cooldown: 0,
+  // Custom Data
+  url: 'https://www.reddit.com/r/DeepFriedMemes/hot/.json?limit=52',
   // Functions
-  run: (client, message, args) => {
-    https.get(url, (res) => {
+  run: (client, msg, args) => {
+    https.get(this.url, (res) => {
       var body = '';
 
       res.on('data', (chunk) => {
@@ -35,7 +34,7 @@ module.exports = {
           .setColor(0x00AE86)
           .setDescription(`[${title}](${link_to_post})`)
           .setURL("https://reddit.com/r/deepfriedmemes");
-        message.channel.send(embed);
+        msg.channel.send(embed);
       }).on('error', function(e) {
         console.log("Got an error: ", e);
       })

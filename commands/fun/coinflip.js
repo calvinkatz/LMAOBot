@@ -3,7 +3,6 @@ module.exports = {
   name: 'coinflip',
   aliases: ['coin'],
   description: 'LMAOBot will flip a coin for you.',
-  usage: '',
   // Requirements
   args: {
     req: false,

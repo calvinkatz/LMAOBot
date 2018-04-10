@@ -2,8 +2,7 @@ module.exports = {
   // Information
   name: 'dankrate',
   aliases: [''],
-  description: '',
-  usage: '',
+  description: 'LMAOBot will rank your dankness.',
   // Requirements
   args: {
     req: false,
@@ -24,4 +23,3 @@ module.exports = {
     });
   }
 }
-msgmsg

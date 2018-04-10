@@ -3,7 +3,6 @@ module.exports = {
   name: 'say',
   aliases: [''],
   description: 'LMAOBot will say something for you.',
-  usage: '',
   // Requirements
   args: {
     req: false,

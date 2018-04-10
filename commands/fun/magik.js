@@ -3,7 +3,6 @@ module.exports = {
   name: 'magik',
   aliases: ['fp', 'mp'],
   description: 'LMAOBot will fuck up your profile pic.',
-  usage: '',
   // Requirements
   args: {
     req: false,

@@ -27,7 +27,7 @@ const Sounds = sequelize.define('sounds', {
 module.exports = {
   // Information
   name: 'addsound',
-  aliases: ['as'],
+  aliases: ['asound', '+s'],
   description: 'Add a sound to the bot\'s sound board.',
   usage: '<sound name> <youtube url>',
   // Requirements

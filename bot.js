@@ -6,11 +6,11 @@ const ytdl = require('ytdl-core');
 const Util = require('discord.js');
 const YouTube = require('simple-youtube-api');
 const youtube = new YouTube('AIzaSyANS8AVVuSxUOifKikrllcTMRewOfMTFr4');
-const voteapi = "https://discordbots.org/api/bots/398413630149885952/votes?onlyids=true";
+const voteapi = 'https://discordbots.org/api/bots/398413630149885952/votes?onlyids=true';
 const Sequelize = require('sequelize');
 const fs = require('fs');
 const https = require('https');
-process.on('unhandledRejection', console.error)
+process.on('unhandledRejection', console.error);
 
 // Setup Discord.js Client/Bot
 // *****************************************************************************
@@ -51,7 +51,7 @@ client.is_developer = (id) => {
   } else {
     return false;
   }
-}
+};
 
 
 // Setup SQL database conneciton
@@ -95,26 +95,24 @@ client.on('ready', () => {
 
   setInterval(async () => {
     try {
-      let res = await require('snekfetch').get(`https://discordbots.org/api/bots/398413630149885952/votes?onlyids=1`).set('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5ODQxMzYzMDE0OTg4NTk1MiIsImJvdCI6dHJ1ZSwiaWF0IjoxNTE1NDc5MzAwfQ.fZOBCz8fBAS-24EeC0uxOwlvs6LLqKTPgW-cpBQl1Z8').query('onlyids', true);
+      const res = await require('snekfetch').get('https://discordbots.org/api/bots/398413630149885952/votes?onlyids=1').set('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5ODQxMzYzMDE0OTg4NTk1MiIsImJvdCI6dHJ1ZSwiaWF0IjoxNTE1NDc5MzAwfQ.fZOBCz8fBAS-24EeC0uxOwlvs6LLqKTPgW-cpBQl1Z8').query('onlyids', true);
       if (!res) return console.error('discordbots.org> Checking upvotes returned no result.');
 
       if (res.status == 200) {
-        let body = res.body;
-        let supportguild = client.guilds.get("399121674198581248");
-        let role = "403490721421590529";
+        const body = res.body;
+        const supportguild = client.guilds.get('399121674198581248');
+        const role = '403490721421590529';
 
-        console.log("discordbots.org> Checking upvotes for roles.");
+        console.log('discordbots.org> Checking upvotes for roles.');
 
         if (supportguild) {
           supportguild.members.map(member => {
             if (member.roles.has(role)) {
               if (body.indexOf(member.user.id) == -1) {
-                member.removeRole(role, "Removed upvote.");
+                member.removeRole(role, 'Removed upvote.');
               }
-            } else {
-              if (body.indexOf(member.user.id) != -1) {
-                member.addRole(role, "Added upvote.");
-              }
+            } else if (body.indexOf(member.user.id) != -1) {
+              member.addRole(role, 'Added upvote.');
             }
           });
         }
@@ -122,23 +120,23 @@ client.on('ready', () => {
         console.error('discordbots.org> Checking upvotes returned status code: ' + res.status);
       }
     } catch (err) {
-      console.error('discordbots.org> Checking upvotes returned error: ' + err)
+      console.error('discordbots.org> Checking upvotes returned error: ' + err);
     }
     client.shard.broadcastEval('this.guilds.size').then(results => {
-      snekfetch.post(`https://discordbots.org/api/bots/stats`)
+      snekfetch.post('https://discordbots.org/api/bots/stats')
         .set('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5ODQxMzYzMDE0OTg4NTk1MiIsImJvdCI6dHJ1ZSwiaWF0IjoxNTE1NDc5MzAwfQ.fZOBCz8fBAS-24EeC0uxOwlvs6LLqKTPgW-cpBQl1Z8')
         .send({
-          server_count: `${results.reduce((prev, val) => prev + val, 0)}`
+          server_count: `${results.reduce((prev, val) => prev + val, 0)}`,
         })
         .then(() => console.log('Updated discordbots.org stats.'))
         .catch(err => console.error(`Whoops something went wrong: ${err.body}`));
 
-      client.user.setActivity(`${client.config.prefix} help | ${results.reduce((prev, val) => prev + val, 0)} servers`)
+      client.user.setActivity(`${client.config.prefix} help | ${results.reduce((prev, val) => prev + val, 0)} servers`);
     });
   }, 600000);
 });
 
-client.on('message', msg => {
+client.on('msg', msg => {
   if (!msg.content.startsWith(client.config.prefix) || msg.author.client) return;
 
   // Convert input into command name & args
@@ -151,17 +149,19 @@ client.on('message', msg => {
 
   // Check that command arguments requirements are met
   if ('args' in command && command.args.req && args.length >= command.args.min) {
-    return msg.channel.send(` you didn't provide the required arguments!\nUsage: \`${client.config.prefix} ${command.name} ` + 'usage' in command ? command.usage : '' + `\``);
+    return msg.channel.send(` you didn't provide the required arguments!\nUsage: \`${client.config.prefix} ${command.name} ` + 'usage' in command ? command.usage : '' + '`');
   }
 
   // Check whether it's a developer only command
-  if ('dev_only' in command && command.dev_only && !client.is_developer(msg.author.id)) return msg.channel.send({
-    embed: {
-      color: 0x2471a3,
-      title: ':x: Access Denied!!!',
-      description: 'Nice try, but only **Bot Developers** can run this command!'
-    }
-  });
+  if ('dev_only' in command && command.dev_only && !client.is_developer(msg.author.id)) {
+    return msg.channel.send({
+      embed: {
+        color: 0x2471a3,
+        title: ':x: Access Denied!!!',
+        description: 'Nice try, but only **Bot Developers** can run this command!',
+      },
+    });
+  }
 
   // Check whether it's a guild only command
   if ('guild_only' in command && command.guild_only && msg.channel.type !== 'text') {
@@ -169,8 +169,8 @@ client.on('message', msg => {
       embed: {
         color: 0x2471a3,
         title: ':x: Server Command!!!',
-        description: 'I can only execute that command inside **Servers**!'
-      }
+        description: 'I can only execute that command inside **Servers**!',
+      },
     });
   }
 
@@ -187,48 +187,48 @@ client.on('message', msg => {
     if (!timestamps.has(msg.author.id)) {
       timestamps.set(msg.author.id, now);
       return setTimeout(() => timestamps.delete(msg.author.id), cooldown);
-    } else if (now < timestamps.get(message.author.id) + cooldown) {
+    } else if (now < timestamps.get(msg.author.id) + cooldown) {
       return msg.channel.send({
         embed: {
           color: 0x2471a3,
           title: ':x: Command On Cooldown!!!',
-          description: `Please wait ` + (now - timestamps.get(msg.author.id)) / 1000 + ` second(s) before reusing the \`${command.name}\` command.`
-        }
+          description: 'Please wait ' + (now - timestamps.get(msg.author.id)) / 1000 + ` second(s) before reusing the \`${command.name}\` command.`,
+        },
       });
     }
 
     timestamps.set(msg.author.id, now);
     setTimeout(() => timestamps.delete(msg.author.id), cooldown);
   }
-}
 
-try {
-  command.run(client, msg, args);
-} catch (error) {
-  console.error(error);
-  msg.channel.send(' there was an error in trying to execute that command!');
-}
+
+  try {
+    command.run(client, msg, args);
+  } catch (error) {
+    console.error(error);
+    msg.channel.send(' there was an error in trying to execute that command!');
+  }
 });
 
 client.on('guildCreate', guild => {
   // Get channel in which bot is allowed to msg
-  let default_channel = guild.channels.find(channel => channel.type === 'text' && channel.permissionsFor(guild.me).has('SEND_MESSAGES'));
+  const default_channel = guild.channels.find(channel => channel.type === 'text' && channel.permissionsFor(guild.me).has('SEND_msgS'));
   if (!default_channel) return;
 
   default_channel.send({
     embed: {
       color: 0x2471a3,
       author: {
-        name: bot.user.username,
-        icon_url: bot.user.avatarURL,
+        name: client.user.username,
+        icon_url: client.user.avatarURL,
       },
       title: 'Howdy folks!',
       url: 'https://discord.js.org/#/',
-      description: `Thnx veri much for inViting mi to **${guild.name}**!!1! I'm **LMAOBot**, a f4ntast1c b0t developed by *${client.config.developers.join(", ")}*! \n \nTo look at the list of my commands, type __**'${client.config.prefix} help'**__! \n \nHey you! yeah.. you!11! W4nt to upv0te LMAOBot to gain __***EXCLUSIVE***__ features such as upvote only commands, and a sexy role on the support server?!?!?11 You can do so by typing **'${client.config.prefix} upvote'** in chat! Thnx xoxo :heart: \n \nIf you're having any problems, feel free to join my support server [here](${client.config.support_server})!`,
+      description: `Thnx veri much for inViting mi to **${guild.name}**!!1! I'm **LMAOBot**, a f4ntast1c b0t developed by *${client.config.developers.join(', ')}*! \n \nTo look at the list of my commands, type __**'${client.config.prefix} help'**__! \n \nHey you! yeah.. you!11! W4nt to upv0te LMAOBot to gain __***EXCLUSIVE***__ features such as upvote only commands, and a sexy role on the support server?!?!?11 You can do so by typing **'${client.config.prefix} upvote'** in chat! Thnx xoxo :heart: \n \nIf you're having any problems, feel free to join my support server [here](${client.config.support_server})!`,
       timestamp: new Date(),
       footer: {
-        icon_url: bot.user.avatarURL,
-        text: bot.config.embed.footer,
+        icon_url: client.user.avatarURL,
+        text: client.config.embed.footer,
       },
     },
   });

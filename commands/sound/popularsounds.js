@@ -29,24 +29,24 @@ module.exports = {
   // Requirements
   args: {
     req: false,
-    min: 0
+    min: 0,
   },
   dev_only: false,
   guild_only: false,
   cooldown: 0,
-  //Function
-  run: (client, msg, args) => {
+  // Function
+  run: async (client, msg, args) => {
     const soundList = await Sounds.findAll({
-      attributes: ['name', 'usage_count']
+      attributes: ['name', 'usage_count'],
     });
-    const soundString = soundList.map(s => s.name).join(", ").slice(0, 2048) || ':x: There are no sounds currently set!';
+    const soundString = soundList.map(s => s.name).join(', ').slice(0, 2048) || ':x: There are no sounds currently set!';
     const embed = new Discord.RichEmbed()
-      .setTitle("Most popular sounds:")
+      .setTitle('Most popular sounds:')
       .setDescription(`${soundString}`)
       .setColor(0xff6666)
-      .setFooter(`To add sounds, type 'lmao addsound <sound name> <youtube url>'`)
+      .setFooter('To add sounds, type \'lmao addsound <sound name> <youtube url>\'');
     return msg.channel.send({
-      embed: embed
+      embed: embed,
     });
-  }
-}
+  },
+};

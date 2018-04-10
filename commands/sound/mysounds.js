@@ -29,27 +29,27 @@ module.exports = {
   // Requirements
   args: {
     req: false,
-    min: 0
+    min: 0,
   },
   dev_only: false,
   guild_only: false,
   cooldown: 0,
-  //Function
-  run: (client, msg, args) => {
+  // Function
+  run: async (client, msg, args) => {
     const sound = await Sounds.findAll({
       where: {
         username: {
-          [Sequelize.Op.like]: `% (${msg.author.id})`
-        }
-      }
+          [Sequelize.Op.like]: `% (${msg.author.id})`,
+        },
+      },
     });
-    const soundString = sound.map(s => s.name).join(", ") || ":x: You don't have any sounds currently added!";
+    const soundString = sound.map(s => s.name).join(', ') || ':x: You don\'t have any sounds currently added!';
 
     const embed = new Discord.RichEmbed()
       .setTitle(`${msg.author.username}'s Sounds`)
       .setDescription(`${soundString}`)
-      .setColor(0x2471a3)
+      .setColor(0x2471a3);
 
     msg.channel.send(embed);
-  }
-}
+  },
+};

@@ -29,32 +29,32 @@ module.exports = {
   // Requirements
   args: {
     req: true,
-    min: 1
+    min: 1,
   },
   dev_only: false,
   guild_only: false,
   cooldown: 0,
-  //Function
-  run: (client, msg, args) => {
+  // Function
+  run: async (client, msg, args) => {
     const soundName = args[0];
-    if (!soundName) return msg.channel.send(":x: You need to enter a sound to delete!")
+    if (!soundName) return msg.channel.send(':x: You need to enter a sound to delete!');
 
     const sound = await Sounds.findAll({
       where: {
         username: {
-          [Sequelize.Op.like]: `% (${msg.author.id})`
-        }
-      }
+          [Sequelize.Op.like]: `% (${msg.author.id})`,
+        },
+      },
     });
 
-    let mysounds = sound.map(s => s.name).join(" ");
-    if (!mysounds.includes(soundName) && client.is_developer(msg.author.id)) return msg.channel.send(":x: You can only delete your own sounds!");
+    const mysounds = sound.map(s => s.name).join(' ');
+    if (!mysounds.includes(soundName) && client.is_developer(msg.author.id)) return msg.channel.send(':x: You can only delete your own sounds!');
     const rowCount = await Sounds.destroy({
       where: {
-        name: soundName
-      }
+        name: soundName,
+      },
     });
     if (!rowCount) return msg.channel.send(`Sound **${soundName}** does not exist.`);
     return msg.channel.send(`Sound **${soundName}** deleted.`);
-  }
-}
+  },
+};

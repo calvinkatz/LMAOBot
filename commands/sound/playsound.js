@@ -33,16 +33,16 @@ module.exports = {
   // Requirements
   args: {
     req: true,
-    min: 1
+    min: 1,
   },
   dev_only: false,
   guild_only: false,
   cooldown: 0,
-  //Function
-  run: (client, msg, args) => {
+  // Function
+  run: async (client, msg, args) => {
     const soundName = args;
 
-    if (!soundName) return msg.channel.send(":x: You need to enter a sound name to play!")
+    if (!soundName) return msg.channel.send(':x: You need to enter a sound name to play!');
     const voiceChannel = msg.member.voiceChannel;
     if (!voiceChannel) return msg.channel.send(':x: You need to be in a voice channel to use this command!');
     const permissions = voiceChannel.permissionsFor(msg.client.user);
@@ -54,27 +54,27 @@ module.exports = {
     }
     const sound = await Sounds.findOne({
       where: {
-        name: soundName
-      }
-    })
+        name: soundName,
+      },
+    });
     if (sound) {
       sound.increment('usage_count');
       // ytdl code goes here..
       const streamOptions = {
         seek: 0,
-        volume: 1
+        volume: 1,
       };
       const stream = ytdl(sound.url, {
-        filter: 'audioonly'
+        filter: 'audioonly',
       });
       voiceChannel.join().then(connection => {
         const dispatcher = connection.playStream(stream, streamOptions);
         dispatcher.on('end', end => {
           voiceChannel.leave();
-        })
-      })
+        });
+      });
       return msg.channel.send(`Now playing: **${soundName}**`);
     }
-    return msg.channel.send(`Could not find sound: **${soundName}**\n\nTo view a list of all the available sounds, type **'lmao listsounds'**`)
-  }
-}
+    return msg.channel.send(`Could not find sound: **${soundName}**\n\nTo view a list of all the available sounds, type **'lmao listsounds'**`);
+  },
+};

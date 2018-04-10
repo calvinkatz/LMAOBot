@@ -4,7 +4,11 @@ module.exports = {
   aliases: ['up', '^'],
   description: 'Upvote the bot on discordbots.org for exclusive perks! :heart_eyes:',
   // Requirements
-  args: false,
+  args: {
+    req: false,
+    min: 0
+  },
+  dev_only: false,
   guild_only: false,
   cooldown: 0,
   //Function

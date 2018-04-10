@@ -4,7 +4,11 @@ module.exports = {
   aliases: ['<', '>'],
   description: 'Invite the bot to other servers.',
   // Requirements
-  args: false,
+  args: {
+    req: false,
+    min: 0
+  },
+  dev_only: false,
   guild_only: false,
   cooldown: 0,
   //Function

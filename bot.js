@@ -33,6 +33,23 @@ for (const folder of command_folders) {
 }
 
 
+// Setup Client's custom function
+
+
+/**
+ * Check wheter given user ID belongs to a bot's developer.
+ * @param {Integer} [id] User's ID.
+ * @return {Boolean} True if it's a developer's id; false, if it's not.
+ */
+client.is_developer = (id) => {
+  if (this.config.developer_ids.indexOf(id) !== -1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
 // Setup SQL database conneciton
 const sequelize = new Sequelize('database', 'username', 'password', {
   host: 'localhost',
@@ -130,8 +147,23 @@ client.on('message', msg => {
     return msg.reply(' you didn\'t provide any arguments!');
   }
 
+  // Check whether it's a developer
+  if (command.dev_only && !client.is_developer(msg.author.id)) return msg.reply({
+    embed: {
+      color: 0x2471a3,
+      title: ':x: Access Denied!!!',
+      description: 'Nice try, but only **Bot Developers** can run this command!'
+    }
+  });
+
   if (command.guild_only && msg.channel.type !== 'text') {
-    return msg.reply(' I can only execute that command inside servers!');
+    return msg.reply({
+      embed: {
+        color: 0x2471a3,
+        title: ':x: Server Command!!!',
+        description: 'I can only execute that command inside **Servers**!'
+      }
+    });
   }
 
   try {

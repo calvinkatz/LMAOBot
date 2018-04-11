@@ -14,6 +14,26 @@ module.exports = {
   // Function
   run: (client, msg, args) => {
     if (!args.length) {
+
+      const commands = {};
+      client.commands.forEach(function(command) {
+        if (['admin'].indexOf(command.category.toLowerCase()) !== -1) {
+          return;
+        } else if (!(command.category in commands)) {
+          commands[command.category] = [];
+        }
+
+        commands[command.category].push(command.name);
+      });
+
+      const fields = [];
+      for (const category of Object.keys(commands)) {
+        fields.push({
+          name: category,
+          value: commands[category].join(', '),
+        });
+      }
+
       msg.channel.send({
         embed: {
           color: 0x2471a3,
@@ -22,11 +42,8 @@ module.exports = {
             icon_url: client.user.avatarURL,
           },
           title: 'Help Menu',
-          description: `The prefix for my commands is ${client.config.prefix}.\nUsing a command would look like this: ${client.config.prefix} <command name>`,
-          fields: [{
-            name: 'Commands',
-            value: '*' + client.commands.keyArray().join(', ') + '*',
-          }],
+          description: `The prefix for my commands is \`${client.config.prefix}\`\nUsing a command would look like this: \`${client.config.prefix} <command name> <args>\``,
+          fields: fields,
           timestamp: new Date(),
           footer: {
             icon_url: client.user.avatarURL,

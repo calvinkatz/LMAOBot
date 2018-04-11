@@ -2,7 +2,7 @@ module.exports = {
   // Information
   name: 'help',
   aliases: ['h', '?'],
-  description: 'Information on the async\'s usage.',
+  description: 'Information on the LMAOBot\'s usage.',
   // Requirements
   args: {
     req: false,
@@ -18,24 +18,24 @@ module.exports = {
         embed: {
           color: 0x2471a3,
           author: {
-            name: async.user.username,
-            icon_url: async.user.avatarURL,
+            name: client.user.username,
+            icon_url: client.user.avatarURL,
           },
           title: 'Help Menu',
           description: `The prefix for my commands is ${client.config.prefix}.\nUsing a command would look like this: ${client.config.prefix} <command name>`,
           fields: [{
             name: 'Commands',
-            value: '*' + async.commands.keyArray().join(', ') + '*',
+            value: '*' + client.commands.keyArray().join(', ') + '*',
           }],
           timestamp: new Date(),
           footer: {
-            icon_url: async.user.avatarURL,
-            text: async.config.embed.footer,
+            icon_url: client.user.avatarURL,
+            text: client.config.embed.footer,
           },
         },
       });
     } else {
-      const command = async.commands.get(args[0]) || async.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
+      const command = client.commands.get(args[0]) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
       if (!command) return;
 
       // TODO Add more information on command
@@ -57,16 +57,16 @@ module.exports = {
         embed: {
           color: 3447003,
           author: {
-            name: async.user.username,
-            icon_url: async.user.avatarURL,
+            name: client.user.username,
+            icon_url: client.user.avatarURL,
           },
-          title: async.config.prefix + command.name + ' ' + (command.usage ? command.usage : ''),
+          title: client.config.prefix + command.name + ' ' + (command.usage ? command.usage : ''),
           description: command.description,
           fields: fields,
           timestamp: new Date(),
           footer: {
-            icon_url: async.user.avatarURL,
-            text: async.config.embed.footer,
+            icon_url: client.user.avatarURL,
+            text: client.config.embed.footer,
           },
         },
       });

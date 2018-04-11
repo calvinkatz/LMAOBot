@@ -136,11 +136,11 @@ client.on('ready', () => {
   }, 600000);
 });
 
-client.on('msg', msg => {
-  if (!msg.content.startsWith(client.config.prefix) || msg.author.client) return;
+client.on('message', msg => {
+  if (!msg.content.startsWith(client.config.prefix) || msg.author.bot) return;
 
   // Convert input into command name & args
-  const args = msg.content.slice(client.config.prefix.length).split(/ +/);
+  const args = msg.content.slice(client.config.prefix.length + 1).split(/ +/);
   const command_name = args.shift().toLowerCase();
 
   // Find a command by it's name or aliases

@@ -1,5 +1,5 @@
 const https = require('https');
-const url = 'https://www.reddit.com/r/pepe/hot/.json?limit=100'
+const url = 'https://www.reddit.com/r/DeepFriedMemes/hot/.json?limit=100'
 const Discord = require('discord.js');
 
 module.exports.run = (client, message, args) => {
@@ -36,13 +36,13 @@ module.exports.run = (client, message, args) => {
 
 				message.channel.send(textembed);
 			}
-			const imageembed = new Discord.RichEmbed()
+			const embed = new Discord.RichEmbed()
 			.setTitle(subredditname)
 			.setImage(image)
 			.setColor(0x00AE86)
 			.setDescription(`[${title}](${link_to_post})`)
 			.setURL(`https://reddit.com/${subredditname}`);
-			message.channel.send(imageembed);
+			message.channel.send({embed});
 		}).on('error', function(e) {
 			console.log("Got an error: ", e);
 		})
@@ -50,5 +50,5 @@ module.exports.run = (client, message, args) => {
 }
 
 module.exports.help = {
-	name: "pepe"
+	name: "deepfried"
 }

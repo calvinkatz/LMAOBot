@@ -44,7 +44,10 @@ module.exports.run = async (client, message, args) => {
 			const streamOptions = { seek: 0, volume: 1 };
 			const stream = ytdl(sound.url, { filter : 'audioonly' });
 			voiceChannel.join().then(connection => {
-				const dispatcher = connection.playStream(stream, streamOptions);
+				const dispatcher = connection.playStream(stream, streamOptions)
+				dispatcher.on('error', err => {
+					return message.channel.send(`:x: Something went wrong while playing **${soundName}**. The video is either unavailable or the bot cannot read the link, please try again later.`)
+				})
 				dispatcher.on('end', end => {
 					voiceChannel.leave();
 				})

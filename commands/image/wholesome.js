@@ -1,5 +1,5 @@
 const https = require('https');
-const url = 'https://www.reddit.com/r/pepe/hot/.json?limit=100'
+const url = 'https://www.reddit.com/r/wholesomememes/hot/.json?limit=100'
 const Discord = require('discord.js');
 
 module.exports.run = (client, message, args) => {
@@ -50,5 +50,5 @@ module.exports.run = (client, message, args) => {
 }
 
 module.exports.help = {
-	name: "pepe"
+	name: "wholesome"
 }

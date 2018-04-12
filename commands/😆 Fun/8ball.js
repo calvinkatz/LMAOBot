@@ -3,6 +3,7 @@ module.exports = {
     name: '8ball',
     aliases: ['8', '8b'],
     description: 'Get a eight ball\'s response.',
+    usage: '<question>',
     // Requirements
     args: {
       req: true,

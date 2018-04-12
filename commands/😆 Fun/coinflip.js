@@ -12,16 +12,12 @@ module.exports = {
   guild_only: false,
   cooldown: 0,
   // Custom Data
-  responses: coinflips = [
+  responses: [
     'heads',
     'tails',
   ],
   // Function
   run: (client, msg, args) => {
-    const coinargs = msg.content.substring(prefix.length);
-    if (coinargs[1] != null) {
-      const random = Math.floor(Math.random() * coinflips.length);
-      msg.channel.send('The coin landed on ' + (coinflips[random]) + '!');
-    }
+    msg.channel.send('The coin landed on ' + (this.responses[Math.floor(Math.random() * this.responses.length)]) + '!');
   },
 };

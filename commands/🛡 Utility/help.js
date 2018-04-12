@@ -55,15 +55,20 @@ module.exports = {
       const command = client.commands.get(args[0]) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
       if (!command) return;
 
-      // TODO Add more information on command
-
       // Setup fields
       const fields = [];
 
+      if ('args' in command && command.args.req === true) {
+        fields.push({
+          name: 'Argument Requirements',
+          value: `Minimum Required: ${command.args.min}`,
+        });
+      }
+
       const requirements = [];
-      for (const requirement of ['args', 'dev_only', 'guild_only', 'cooldown']) {
+      for (const requirement of ['dev_only', 'guild_only', 'cooldown']) {
         if (requirement in command) {
-          requirements.push(requirements);
+          requirements.push(requirement.replace('_', ' ') + ': ' + command[requirement]);
         }
       }
 

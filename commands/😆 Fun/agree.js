@@ -6,13 +6,13 @@ module.exports = {
   // Requirements
   args: {
     req: false,
-    min: 0
+    min: 0,
   },
   dev_only: false,
   guild_only: false,
   cooldown: 0,
-  //Function
+  // Function
   run: (client, msg, args) => {
     msg.channel.send(`I agree with ${msg.member.user}`);
-  }
-}
+  },
+};

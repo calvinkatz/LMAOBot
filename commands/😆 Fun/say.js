@@ -19,10 +19,10 @@ module.exports = {
       .setColor(0xff0000);
 
     if (!args) {
-return msg.channel.send({
-      embed: embed,
-    });
-}
+      return msg.channel.send({
+        embed: embed,
+      });
+    }
     msg.channel.send(args);
   },
 };

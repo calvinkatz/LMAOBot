@@ -6,13 +6,13 @@ module.exports = {
   // Requirements
   args: {
     req: false,
-    min: 0
+    min: 0,
   },
   dev_only: false,
   guild_only: false,
   cooldown: 0,
-  //Function
+  // Function
   run: (client, msg, args) => {
     msg.channel.send(`P0ng!!1!11! My connection to the server is \`${Date.now() - msg.createdTimestamp} ms\` :alien:`);
-  }
-}
+  },
+};

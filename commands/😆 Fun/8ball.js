@@ -6,30 +6,30 @@ module.exports = {
   // Requirements
   args: {
     req: false,
-    min: 0
+    min: 0,
   },
   dev_only: false,
   guild_only: false,
   cooldown: 0,
   // Custom data
   responses: [
-    "Yes!",
-    "No...",
-    "Maybe.",
-    "Probably.",
-    "I dont think so.",
-    "Never!",
-    "Indeed.",
-    "Certainly.",
-    "There is a possibility.",
-    "No way!",
-    "As I see it, yes.",
-    "Most likely.",
-    "You may rely on it.",
-    "Signs point to yes."
+    'Yes!',
+    'No...',
+    'Maybe.',
+    'Probably.',
+    'I dont think so.',
+    'Never!',
+    'Indeed.',
+    'Certainly.',
+    'There is a possibility.',
+    'No way!',
+    'As I see it, yes.',
+    'Most likely.',
+    'You may rely on it.',
+    'Signs point to yes.',
   ],
-  //Function
+  // Function
   run: (client, msg, args) => {
     msg.channel.send(this.responses[Math.floor(Math.random() * this.responses.length)]);
-  }
-}
+  },
+};

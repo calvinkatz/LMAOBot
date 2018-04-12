@@ -7,14 +7,14 @@ module.exports = {
   // Requirements
   args: {
     req: false,
-    min: 0
+    min: 0,
   },
   dev_only: false,
   guild_only: false,
   cooldown: 0,
   // Custom Data
   memes: ['alone', 'doge', 'dolan', 'kappa', 'lenny', 'lol', 'megusta', 'notsure', 'pepe', 'sanic', 'spiderman', 'spooderman', 'troll', 'wat'],
-  //Function
+  // Function
   run: (client, msg, args) => {
     args = msg.content.slice(client.config.prefix.length).split(/ +/);
 
@@ -29,8 +29,8 @@ module.exports = {
 
     msg.channel.send({
       files: [
-        `./img/${meme}.png`
-      ]
+        `./img/${meme}.png`,
+      ],
     });
-  }
-}
+  },
+};

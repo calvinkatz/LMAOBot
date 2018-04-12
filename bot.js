@@ -49,11 +49,7 @@ for (const folder of command_folders) {
  * @return {Boolean} True if it's a developer's id; false, if it's not.
  */
 client.is_developer = (id) => {
-  if (this.config.developer_ids.indexOf(id) !== -1) {
-    return true;
-  } else {
-    return false;
-  }
+  return client.config.developer_ids.indexOf(id) > -1
 };
 
 

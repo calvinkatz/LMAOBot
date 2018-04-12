@@ -23,6 +23,6 @@ module.exports = {
   ],
   // Function
   run: (client, command, msg, args) => {
-    msg.channel.send(this.responses[Math.floor(Math.random() * this.responses.length)]);
+    msg.channel.send(command.responses[Math.floor(Math.random() * command.responses.length)]);
   },
 };

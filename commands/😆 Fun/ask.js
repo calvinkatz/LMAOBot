@@ -19,7 +19,7 @@ module.exports = {
   run: (client, command, msg, args) => {
     const askargs = msg.content.substring(prefix.length + 1).split(' ');
     if (askargs[1] != null) {
-      msg.channel.send(this.responses[Math.floor(Math.random() * this.responses.length)]);
+      msg.channel.send(command.responses[Math.floor(Math.random() * command.responses.length)]);
     } else {
       const embed = new Discord.RichEmbed()
         .setTitle('REEEEeeEEe!!11!!!1!')

@@ -11,6 +11,6 @@ module.exports = {
   ],
   // Function
   run: (client, command, msg, args) => {
-    msg.channel.send('The coin landed on ' + (this.responses[Math.floor(Math.random() * this.responses.length)]) + '!');
+    msg.channel.send('The coin landed on ' + (command.responses[Math.floor(Math.random() * command.responses.length)]) + '!');
   },
 };

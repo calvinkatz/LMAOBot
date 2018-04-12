@@ -30,7 +30,7 @@ module.exports = {
       for (const category of Object.keys(commands)) {
         fields.push({
           name: category,
-          value: commands[category].join(', '),
+          value: '*' + commands[category].join(', ') + '*',
         });
       }
 
@@ -58,10 +58,21 @@ module.exports = {
       // TODO Add more information on command
 
       // Setup fields
-      const fields = [{
-        name: 'Command Information',
-        value: `Requires Arguments: *${command.args}* | Server Command: *${command.guild_only}*` + (command.cooldown >= 1) ? ` | Cooldown: *${command.cooldown}*` : '',
-      }];
+      const fields = [];
+
+      const requirements = [];
+      for (const requirement of ['args', 'dev_only', 'guild_only', 'cooldown']) {
+        if (requirement in command) {
+          requirements.push(requirements);
+        }
+      }
+
+      if (requirements.length > 0) {
+        fields.push({
+          name: 'Command Requirements',
+          value: requirements.join(' | '),
+        });
+      }
 
       if ('aliases' in command) {
         fields.push({

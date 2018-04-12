@@ -4,15 +4,8 @@ module.exports = {
   aliases: ['<', '>'],
   description: 'Invite the bot to other servers.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: (client, msg, args) => {
+  run: (client, command, msg, args) => {
     msg.channel.send({
       embed: {
         title: 'Invite LMAOBot to your Discord Server',

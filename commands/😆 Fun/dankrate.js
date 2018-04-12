@@ -4,15 +4,8 @@ module.exports = {
   aliases: [''],
   description: 'LMAOBot will rank your dankness.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: (client, msg, args) => {
+  run: (client, command, msg, args) => {
     const randomnumber = Math.floor(Math.random() * 101);
     const embed = new Discord.RichEmbed()
       .setTitle('Scanning...')

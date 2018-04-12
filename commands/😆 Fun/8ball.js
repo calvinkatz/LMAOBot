@@ -4,13 +4,6 @@ module.exports = {
   aliases: ['8'],
   description: 'Get a eight ball\'s response.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Custom data
   responses: [
     'Yes!',
@@ -29,7 +22,7 @@ module.exports = {
     'Signs point to yes.',
   ],
   // Function
-  run: (client, msg, args) => {
+  run: (client, command, msg, args) => {
     msg.channel.send(this.responses[Math.floor(Math.random() * this.responses.length)]);
   },
 };

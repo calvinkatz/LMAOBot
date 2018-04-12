@@ -4,15 +4,8 @@ module.exports = {
   aliases: ['about', '%'],
   description: 'Information on the bot.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: (client, msg, args) => {
+  run: (client, command, msg, args) => {
     const embed = new Discord.RichEmbed()
       .setTitle('LMAOBot Info and Stats')
       .setDescription('Type \'lmao invite\' to invite LMAOBot to your server or join LMAOBot\'s support server!')

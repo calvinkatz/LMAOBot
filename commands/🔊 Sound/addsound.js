@@ -35,11 +35,8 @@ module.exports = {
     req: true,
     min: 2,
   },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: async (client, msg, args) => {
+  run: async (client, command, msg, args) => {
     process.on('unhandledRejection', console.error);
 
     const soundName = args[0],

@@ -27,15 +27,8 @@ module.exports = {
   aliases: ['lsound', '*s'],
   description: 'List of sounds from LMAOBot\'s sound board.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: async (client, msg, args) => {
+  run: async (client, command, msg, args) => {
     const soundList = await Sounds.findAll({
       attributes: ['name'],
     });

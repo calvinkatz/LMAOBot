@@ -4,15 +4,8 @@ module.exports = {
   aliases: ['fp', 'mp'],
   description: 'LMAOBot will fuck up your profile pic.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: (client, msg, args) => {
+  run: (client, command, msg, args) => {
     const URL = msg.member.user.avatarURL;
     const embed = new Discord.RichEmbed()
 

@@ -5,15 +5,8 @@ module.exports = {
   aliases: [''],
   description: 'LMAOBot will tell you a joke.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: async (client, msg, args) => {
+  run: async (client, command, msg, args) => {
     const chuckapi = 'http://api.icndb.com/jokes/random?firstName=Chuck&amp;lastName=Norris';
     await snekfetch.get(chuckapi).query('joke', true).then(res => {
       const embed = new Discord.RichEmbed()

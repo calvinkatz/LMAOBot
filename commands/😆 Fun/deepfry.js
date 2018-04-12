@@ -4,17 +4,10 @@ module.exports = {
   aliases: ['dp'],
   description: 'Get some deep fired memes.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Custom Data
   url: 'https://www.reddit.com/r/DeepFriedMemes/hot/.json?limit=52',
   // Functions
-  run: (client, msg, args) => {
+  run: (client, command, msg, args) => {
     https.get(this.url, (res) => {
       let body = '';
 

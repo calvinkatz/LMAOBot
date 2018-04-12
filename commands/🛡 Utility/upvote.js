@@ -4,15 +4,8 @@ module.exports = {
   aliases: ['up', '^'],
   description: 'Upvote the bot on discordbots.org for exclusive perks! :heart_eyes:',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: (client, msg, args) => {
+  run: (client, command, msg, args) => {
     const embed = new Discord.RichEmbed()
       .setTitle('What is upvoting?')
       .setDescription('Upvoting is like liking a post on instagram, except it isn\'t instagram, and it isn\'t a picture of someone showing off their food, it\'s a bot.')

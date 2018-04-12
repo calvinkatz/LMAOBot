@@ -4,15 +4,8 @@ module.exports = {
   aliases: [''],
   description: 'LMAOBot will say something for you.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: (client, msg, args) => {
+  run: (client, command, msg, args) => {
     const embed = new Discord.RichEmbed()
       .setTitle(':x: You need to give me something to say!')
       .setDescription('Correct usage: `lmao say <what you want lmaobot to say>`!')

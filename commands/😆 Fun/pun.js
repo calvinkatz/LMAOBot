@@ -4,13 +4,6 @@ module.exports = {
   aliases: [''],
   description: 'LMAOBot will tell you a pun.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Custom Data
   responses: [
     'About a month before he died, my uncle had his back covered in lard. After that, he went down hill fast.',
@@ -44,7 +37,7 @@ module.exports = {
     'Why do the French eat snails? They don\'t like fast food.',
   ],
   // Function
-  run: (client, msg, args) => {
+  run: (client, command, msg, args) => {
     msg.channel.send(this.responses[Math.floor(Math.random() * this.responses.length)]);
   },
 };

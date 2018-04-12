@@ -26,15 +26,8 @@ module.exports = {
   aliases: ['msound', '>s'],
   description: 'Display all the sounds you\'ve added to LMAOBot.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: async (client, msg, args) => {
+  run: async (client, command, msg, args) => {
     const sound = await Sounds.findAll({
       where: {
         username: {

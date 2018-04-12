@@ -10,16 +10,13 @@ module.exports = {
     req: true,
     min: 1,
   },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Custom Data
   responses: [
     'Yes!',
     'No!',
   ],
   // Function
-  run: (client, msg, args) => {
+  run: (client, command, msg, args) => {
     const askargs = msg.content.substring(prefix.length + 1).split(' ');
     if (askargs[1] != null) {
       msg.channel.send(this.responses[Math.floor(Math.random() * this.responses.length)]);

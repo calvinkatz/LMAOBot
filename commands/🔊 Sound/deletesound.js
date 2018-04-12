@@ -30,11 +30,8 @@ module.exports = {
     req: true,
     min: 1,
   },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: async (client, msg, args) => {
+  run: async (client, command, msg, args) => {
     const soundName = args[0];
     if (!soundName) return msg.channel.send(':x: You need to enter a sound to delete!');
 

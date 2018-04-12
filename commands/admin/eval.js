@@ -4,21 +4,17 @@ module.exports = {
   aliases: [''],
   description: 'Do shit around Discord. (╯°□°）╯︵ ┻━┻',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
   dev_only: true,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: async (client, msg, args) => {
+  run: async (client, command, msg, args) => {
     const evalargs = msg.content.split(' ').slice(2);
 
     const clean = text => {
       if (typeof text === 'string') {
         return text.replace(/`/g, '`' + String.fromCharCode(8203)).replace(/@/g, '@' + String.fromCharCode(8203));
-      } else {return text;}
+      } else {
+        return text;
+      }
     };
 
     try {

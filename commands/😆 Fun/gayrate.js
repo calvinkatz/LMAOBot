@@ -4,15 +4,8 @@ module.exports = {
   aliases: ['gay', 'g%', '%g'],
   description: 'LMAOBot will tell you how gay you\'re.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: (client, msg, args) => {
+  run: (client, command, msg, args) => {
     const randomnumber = Math.floor(Math.random() * 101);
     const embed = new Discord.RichEmbed()
       .setTitle('Scanning...')

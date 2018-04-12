@@ -4,15 +4,8 @@ module.exports = {
   aliases: ['h', '?'],
   description: 'Information on the LMAOBot\'s usage.',
   // Requirements
-  args: {
-    req: false,
-    min: 0,
-  },
-  dev_only: false,
-  guild_only: false,
-  cooldown: 0,
   // Function
-  run: (client, msg, args) => {
+  run: (client, command, msg, args) => {
     if (!args.length) {
 
       const commands = {};

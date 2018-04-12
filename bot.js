@@ -30,6 +30,7 @@ for (const folder of command_folders) {
   for (const file of command_files) {
     if (file.split('.').pop() === 'js') {
       const command = require(`./commands/${folder}/${file}`);
+      command.category = folder;
       client.commands.set(command.name, command);
     }
   }
@@ -140,7 +141,7 @@ client.on('message', msg => {
   if (!msg.content.startsWith(client.config.prefix) || msg.author.bot) return;
 
   // Convert input into command name & args
-  const args = msg.content.slice(client.config.prefix.length + 1).split(/ +/);
+  const args = msg.content.slice(client.config.prefix.length).split(/ +/);
   const command_name = args.shift().toLowerCase();
 
   // Find a command by it's name or aliases

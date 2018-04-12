@@ -1,7 +1,7 @@
 module.exports = {
   // Information
   name: '8ball',
-  aliases: ['8'],
+  aliases: ['8', '8b'],
   description: 'Get a eight ball\'s response.',
   // Requirements
   // Custom data

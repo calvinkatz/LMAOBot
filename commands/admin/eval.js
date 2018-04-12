@@ -1,7 +1,6 @@
 module.exports = {
   // Information
   name: 'eval',
-  aliases: [''],
   description: 'Do shit around Discord. (╯°□°）╯︵ ┻━┻',
   // Requirements
   dev_only: true,

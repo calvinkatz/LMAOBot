@@ -1,7 +1,6 @@
 module.exports = {
   // Information
   name: 'roll',
-  aliases: [''],
   description: 'LMAOBot will roll the dice for you.',
   // Requirements
   // Function

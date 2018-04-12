@@ -148,9 +148,11 @@ client.on('message', msg => {
   const command = client.commands.get(command_name) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command_name));
   if (!command) return;
 
+  console.log(`args length: ${args.length}`);
+
   // Check that command arguments requirements are met
-  if ('args' in command && command.args.req && args.length >= command.args.min) {
-    return msg.channel.send(` you didn't provide the required arguments!\nUsage: \`${client.config.prefix} ${command.name} ` + 'usage' in command ? command.usage : '' + '`');
+  if ('args' in command && command.args.req && command.args.min > args.length) {
+    return msg.channel.send(`You didn't provide the required arguments!\nUsage: \`${client.config.prefix} ${command.name} ` + ('usage' in command ? command.usage : '') + '`');
   }
 
   // Check whether it's a developer only command
@@ -207,7 +209,7 @@ client.on('message', msg => {
     command.run(client, command, msg, args);
   } catch (error) {
     console.error(error);
-    msg.channel.send(' there was an error in trying to execute that command!');
+    msg.channel.send('There was an error in trying to execute that command!');
   }
 });
 

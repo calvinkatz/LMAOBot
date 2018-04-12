@@ -1,21 +1,15 @@
 module.exports = {
   // Information
   name: 'say',
-  aliases: [''],
   description: 'LMAOBot will say something for you.',
+  usage: '<what you want LMAOBot to say>',
   // Requirements
+  args: {
+    req: true,
+    min: 1,
+  },
   // Function
   run: (client, command, msg, args) => {
-    const embed = new Discord.RichEmbed()
-      .setTitle(':x: You need to give me something to say!')
-      .setDescription('Correct usage: `lmao say <what you want lmaobot to say>`!')
-      .setColor(0xff0000);
-
-    if (!args) {
-      return msg.channel.send({
-        embed: embed,
-      });
-    }
-    msg.channel.send(args);
+    msg.channel.send(msg.content.slice(client.config.prefix.length + 1 + command.name.length));
   },
 };

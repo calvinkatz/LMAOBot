@@ -54,7 +54,7 @@ module.exports = {
       if ('args' in command && command.args.req === true) {
         fields.push({
           name: 'Argument Requirements',
-          value: `Minimum Required: ${command.args.min}`,
+          value: `Minimum: ${command.args.min}`,
         });
       }
 
@@ -86,7 +86,7 @@ module.exports = {
             name: client.user.username,
             icon_url: client.user.avatarURL,
           },
-          title: client.config.prefix + command.name + ' ' + (command.usage ? command.usage : ''),
+          title: `${client.config.prefix} ${command.name}` + (command.usage ? ` ${command.usage}` : ''),
           description: command.description,
           fields: fields,
           timestamp: new Date(),

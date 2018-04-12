@@ -7,11 +7,23 @@ module.exports = {
   // Function
   run: (client, command, msg, args) => {
     const URL = msg.member.user.avatarURL;
-    const embed = new Discord.RichEmbed()
-
-      .setTitle(':thinking:')
-      .setImage(`https://discord.services/api/magik?url=${URL}`)
-      .setColor(0x2471a3);
-    msg.channel.send(embed);
+    msg.channel.send({
+      embed: {
+        author: {
+          name: client.user.username,
+          icon_url: client.user.avatarURL,
+        },
+        title: ':thinking:',
+        image: {
+          url: `https://discord.services/api/magik?url=${URL}`,
+        },
+        color: 0x2471a3,
+        timestamp: new Date(),
+        footer: {
+          icon_url: client.user.avatarURL,
+          text: client.config.embed.footer,
+        },
+      },
+    });
   },
 };

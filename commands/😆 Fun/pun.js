@@ -1,7 +1,6 @@
 module.exports = {
   // Information
   name: 'pun',
-  aliases: [''],
   description: 'LMAOBot will tell you a pun.',
   // Requirements
   // Custom Data

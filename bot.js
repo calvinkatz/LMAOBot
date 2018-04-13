@@ -158,7 +158,7 @@ client.on('ready', () => {
   }, 600000);
 });
 
-client.on('message', msg => {
+client.on('message', async msg => {
   if (!msg.content.startsWith(client.config.prefix) || msg.author.bot) return;
 
   // Cache data to userInfo database.

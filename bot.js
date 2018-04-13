@@ -257,15 +257,15 @@ client.on('userUpdate', async () => {
   try {
     const updateuser = await userInfo.update({ username: `${msg.author.username}#${msg.author.discriminator}` }, { where: { id: msg.author.id } });
   } catch (err) {
-    if(err.name == "msg is not defined") {
+    if(err.name == "ReferenceError: msg is not defined") {
       try {
         const userinf = await userInfo.create({
           id: msg.author.id,
           user_name: `${msg.author.username}#${msg.author.discriminator}`,
         });
         
-      } catch (err) {
-        if (err.name !== 'SequelizeUniqueConstraintError') console.log(`Got an error: ${err}`);
+      } catch (error) {
+        if (error.name !== 'SequelizeUniqueConstraintError') console.log(`Got an error: ${err}`);
       }
     }
     console.log(`An error occured: ${err}`);

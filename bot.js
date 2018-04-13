@@ -5,11 +5,13 @@ const snekfetch = require('snekfetch');
 const ytdl = require('ytdl-core');
 const Util = require('discord.js');
 const YouTube = require('simple-youtube-api');
-const youtube = new YouTube('AIzaSyANS8AVVuSxUOifKikrllcTMRewOfMTFr4');
+const youtube = new YouTube(process.env.YOUTUBE);
 const voteapi = 'https://discordbots.org/api/bots/398413630149885952/votes?onlyids=true';
 const Sequelize = require('sequelize');
 const fs = require('fs');
 const https = require('https');
+const DBL = require("dblapi.js");
+const dbl = new DBL(process.env.DBL);
 process.on('unhandledRejection', console.error);
 
 // Setup Discord.js Client/Bot
@@ -47,11 +49,7 @@ for (const folder of command_folders) {
  * @return {Boolean} True if it's a developer's id; false, if it's not.
  */
 client.is_developer = (id) => {
-  if (this.config.developer_ids.indexOf(id) !== -1) {
-    return true;
-  } else {
-    return false;
-  }
+  return client.config.developer_ids.indexOf(id) > -1
 };
 
 
@@ -95,37 +93,31 @@ client.on('ready', () => {
   console.log('Ready sir...');
 
   setInterval(async () => {
-    try {
-      const res = await require('snekfetch').get('https://discordbots.org/api/bots/398413630149885952/votes?onlyids=1').set('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5ODQxMzYzMDE0OTg4NTk1MiIsImJvdCI6dHJ1ZSwiaWF0IjoxNTE1NDc5MzAwfQ.fZOBCz8fBAS-24EeC0uxOwlvs6LLqKTPgW-cpBQl1Z8').query('onlyids', true);
-      if (!res) return console.error('discordbots.org> Checking upvotes returned no result.');
+//     try {
+//         let supportguild = client.shard.broadcastEval('client.guilds.get("399121674198581248")');
+//         let role = "403490721421590529";
+//         console.log("discordbots.org> Checking upvotes for roles.");
+//         if(!supportguild) return console.log("discordbots.org> Error: Could not find supportguild");
 
-      if (res.status == 200) {
-        const body = res.body;
-        const supportguild = client.guilds.get('399121674198581248');
-        const role = '403490721421590529';
+//           supportguild.members.map(member => {
+//             if (member.roles.has(role)) {
+//               if (dbl.hasVoted(member.user.id) == false) {
+//                 member.removeRole(role, "Removed upvote.")
+//               }
+//             } else {
+//               if (dbl.hasVoted(member.user.id) == true) {
+//                 member.addRole(role, "Added upvote.")
+//               }
+//             }
+//           });
 
-        console.log('discordbots.org> Checking upvotes for roles.');
-
-        if (supportguild) {
-          supportguild.members.map(member => {
-            if (member.roles.has(role)) {
-              if (body.indexOf(member.user.id) == -1) {
-                member.removeRole(role, 'Removed upvote.');
-              }
-            } else if (body.indexOf(member.user.id) != -1) {
-              member.addRole(role, 'Added upvote.');
-            }
-          });
-        }
-      } else {
-        console.error('discordbots.org> Checking upvotes returned status code: ' + res.status);
-      }
-    } catch (err) {
-      console.error('discordbots.org> Checking upvotes returned error: ' + err);
-    }
+//     } catch (err) {
+//       console.error('discordbots.org> Checking upvotes returned error: ' + err)
+// }
+    
     client.shard.broadcastEval('this.guilds.size').then(results => {
       snekfetch.post('https://discordbots.org/api/bots/stats')
-        .set('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5ODQxMzYzMDE0OTg4NTk1MiIsImJvdCI6dHJ1ZSwiaWF0IjoxNTE1NDc5MzAwfQ.fZOBCz8fBAS-24EeC0uxOwlvs6LLqKTPgW-cpBQl1Z8')
+        .set('Authorization', process.env.DBL)
         .send({
           server_count: `${results.reduce((prev, val) => prev + val, 0)}`,
         })

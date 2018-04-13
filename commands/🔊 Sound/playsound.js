@@ -1,6 +1,4 @@
 const ytdl = require('ytdl-core');
-const YouTube = require('simple-youtube-api');
-const youtube = new YouTube('AIzaSyANS8AVVuSxUOifKikrllcTMRewOfMTFr4');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('database', 'username', 'password', {
   host: 'localhost',
@@ -65,6 +63,9 @@ module.exports = {
       });
       voiceChannel.join().then(connection => {
         const dispatcher = connection.playStream(stream, streamOptions);
+        dispatcher.on('error', err => {
+					return message.channel.send(`:x: Something went wrong while playing **${soundName}**. The video is either unavailable or the bot cannot read the link, please try again later.`)
+				})
         dispatcher.on('end', end => {
           voiceChannel.leave();
         });

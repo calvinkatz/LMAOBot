@@ -58,6 +58,18 @@ module.exports = {
         });
       }
 
+      if ('explanation' in command) {
+        const field_id = fields.push({
+          name: 'Argument Information',
+          value: '',
+        });
+        for (const argument of Object.keys(command.explanation)) {
+          fields[field_id].value += `${argument} :`;
+          if ('default' in command.explanation[argument]) fields[field_id].value += ` ${command.explanation[argument].default}`;
+          if ('options' in command.explanation[argument]) fields[field_id].value += ` ${command.explanation[argument].options}`;
+        }
+      }
+
       const requirements = [];
       for (const requirement of ['dev_only', 'guild_only', 'cooldown']) {
         if (requirement in command) {

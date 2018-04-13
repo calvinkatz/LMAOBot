@@ -1,24 +1,16 @@
 // Import anything and everything required throughout the project
 // *****************************************************************************
 const Discord = require('discord.js');
-const snekfetch = require('snekfetch');
+// const snekfetch = require('snekfetch');
 const ytdl = require('ytdl-core');
 const Util = require('discord.js');
-const YouTube = require('simple-youtube-api');
-const youtube = new YouTube(process.env.YOUTUBE);
-const voteapi = 'https://discordbots.org/api/bots/398413630149885952/votes?onlyids=true';
 const Sequelize = require('sequelize');
 const fs = require('fs');
-<<<<<<< HEAD
-const DBL = require("dblapi.js");
-const dbl = new DBL(process.env.DBL);
-process.on('unhandledRejection', console.error)
-=======
 const https = require('https');
 const DBL = require("dblapi.js");
 const dbl = new DBL(process.env.DBL);
 process.on('unhandledRejection', console.error);
->>>>>>> 8b0e55ccfefc3c4aa1fe7c86cd14ba3ea1e9c2f1
+
 
 // Setup Discord.js Client/Bot
 // *****************************************************************************
@@ -37,14 +29,9 @@ for (const folder of command_folders) {
   const command_files = fs.readdirSync(`./commands/${folder}`);
   for (const file of command_files) {
     if (file.split('.').pop() === 'js') {
-<<<<<<< HEAD
-    const props = require(`./commands/${folder}/${file}`);
-    client.commands.set(props.help.name, props);
-=======
       const command = require(`./commands/${folder}/${file}`);
       command.category = folder;
       client.commands.set(command.name, command);
->>>>>>> 8b0e55ccfefc3c4aa1fe7c86cd14ba3ea1e9c2f1
     }
   }
 }
@@ -73,6 +60,13 @@ const sequelize = new Sequelize('database', 'username', 'password', {
   storage: 'database.sql',
 });
 
+const currencyDB = new Sequelize('database', 'username', 'password', {
+  host: 'localhost',
+  dialect: 'sqlite',
+  logging: false,
+  storage: 'currencysystem.sql',
+});
+
 
 // Setup Sound manager
 // *****************************************************************************
@@ -90,11 +84,33 @@ const Sounds = sequelize.define('sounds', {
   },
 });
 
+// Setup Currency System manager
+// *****************************************************************************
+const userInfo = currencyDB.define('userinfo', {
+  id: {
+    type: Sequelize.STRING,
+    primaryKey: true,
+  },
+  coins: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+    allowNull: false,
+  },
+  cmdsrun: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+    allowNull: false,
+  },
+  lastdaily: Sequelize.STRING,
+  user_name: Sequelize.STRING,
+});
+
 // Setup Client's events handlers
 // *****************************************************************************
 client.on('ready', () => {
-  // Setup Sound system
+  // Setup Sound and Currency system
   Sounds.sync();
+  userInfo.sync();
 
   // Setup Bot
   client.shard.broadcastEval('this.guilds.size').then(results => {
@@ -127,39 +143,44 @@ client.on('ready', () => {
 // }
     
     client.shard.broadcastEval('this.guilds.size').then(results => {
-      snekfetch.post('https://discordbots.org/api/bots/stats')
-        .set('Authorization', process.env.DBL)
-        .send({
-          server_count: `${results.reduce((prev, val) => prev + val, 0)}`,
-        })
-        .then(() => console.log('Updated discordbots.org stats.'))
-        .catch(err => console.error(`Whoops something went wrong: ${err.body}`));
+      dbl.postStats(results.reduce((prev, val) => prev + val, 0));
+      console.log("Updated discordbots.org stats.");
+      // snekfetch.post('https://discordbots.org/api/bots/stats')
+      //   .set('Authorization', process.env.DBL)
+      //   .send({
+      //     server_count: `${results.reduce((prev, val) => prev + val, 0)}`,
+      //   })
+      //   .then(() => console.log('Updated discordbots.org stats.'))
+      //   .catch(err => console.error(`Whoops something went wrong: ${err.body}`));
 
       client.user.setActivity(`${client.config.prefix} help | ${results.reduce((prev, val) => prev + val, 0)} servers`);
     });
   }, 600000);
 });
 
-<<<<<<< HEAD
-client.on('guildCreate', guild => {
-  let defaultChannel = "";
-  guild.channels.forEach((channel) => {
-    if (channel.type == "text" && defaultChannel == "") {
-      if (channel.permissionsFor(guild.me).has("SEND_MESSAGES")) {
-        defaultChannel = channel;
-      }
-    }
-  })
-  if (!defaultChannel) return;
-  //defaultChannel will be the channel object that it first finds the bot has permissions for
-  const embed = new Discord.RichEmbed()
-    .setTitle('Howdy folks!')
-    .setDescription(`thnx veri much for inViting mi to **${guild.name}**!!1! I'm **LMAOBot**, a f4ntast1c b0t created by **Pete#4164**, **Dim#8080**, **NumerX#4587**, and **Clark thy Lord#7042**! \n \nTo look at the list of my commands, type __**'lmao help'**__! \n \nHey you! yeah.. you!11! W4nt to upv0te LMAOBot to gain __***EXCLUSIVE***__ features such as upvote only commands, and a sexy role on the support server?!?!?11 You can do so by typing **'lmao upvote'** in chat! Thnx xoxo :heart: \n \nIf you're having any problems, feel free to join my support server, just type **'lmao invite'**!`)
-    .setColor(0x2471a3)
-=======
 client.on('message', msg => {
   if (!msg.content.startsWith(client.config.prefix) || msg.author.bot) return;
->>>>>>> 8b0e55ccfefc3c4aa1fe7c86cd14ba3ea1e9c2f1
+
+  // Cache data to userInfo database.
+  try {
+    const userinf = await userInfo.create({
+      id: msg.author.id,
+      user_name: `${msg.author.username}#${msg.author.discriminator}`,
+    });
+    
+  } catch (err) {
+    if (err.name !== 'SequelizeUniqueConstraintError') console.log(`Got an error: ${err}`);
+  }
+
+  const finduser = await userInfo.findOne({
+    where: {
+      id: msg.author.id,
+    }
+  });
+
+  if(finduser) {
+    finduser.increment('cmdsrun');
+  }
 
   // Convert input into command name & args
   const args = msg.content.slice(client.config.prefix.length + 1).split(/ +/);
@@ -185,39 +206,6 @@ client.on('message', msg => {
     });
   }
 
-<<<<<<< HEAD
-  setInterval(async () => {
-//     try {
-//         let supportguild = client.shard.broadcastEval('client.guilds.get("399121674198581248")');
-//         let role = "403490721421590529";
-//         console.log("discordbots.org> Checking upvotes for roles.");
-//         if(!supportguild) return console.log("discordbots.org> Error: Could not find supportguild");
-
-//           supportguild.members.map(member => {
-//             if (member.roles.has(role)) {
-//               if (dbl.hasVoted(member.user.id) == false) {
-//                 member.removeRole(role, "Removed upvote.")
-//               }
-//             } else {
-//               if (dbl.hasVoted(member.user.id) == true) {
-//                 member.addRole(role, "Added upvote.")
-//               }
-//             }
-//           });
-
-//     } catch (err) {
-//       console.error('discordbots.org> Checking upvotes returned error: ' + err)
-// }
-
-    client.shard.broadcastEval('this.guilds.size').then(results => {
-      snekfetch.post(`https://discordbots.org/api/bots/stats`)
-        .set('Authorization', process.env.DBL)
-        .send({
-          server_count: `${results.reduce((prev, val) => prev + val, 0)}`
-        })
-        .then(() => console.log('Updated discordbots.org stats.'))
-        .catch(err => console.error(`Whoops something went wrong: ${err.body}`));
-=======
   // Check whether it's a guild only command
   if ('guild_only' in command && command.guild_only && msg.channel.type !== 'text') {
     return msg.channel.send({
@@ -234,7 +222,6 @@ client.on('message', msg => {
     if (!client.cooldowns.has(command.name)) {
       client.cooldowns.set(command.name, new Discord.Collection());
     }
->>>>>>> 8b0e55ccfefc3c4aa1fe7c86cd14ba3ea1e9c2f1
 
     const now = Date.now();
     const timestamps = client.cooldowns.get(command.name);
@@ -263,6 +250,14 @@ client.on('message', msg => {
   } catch (error) {
     console.error(error);
     msg.channel.send('There was an error in trying to execute that command!');
+  }
+});
+
+client.on('userUpdate', async () => {
+  try {
+    const updateuser = await userInfo.update({ username: `${msg.author.username}#${msg.author.discriminator}` }, { where: { id: msg.author.id } });
+  } catch (err) {
+    console.log(`An error occured: ${err}`);
   }
 });
 

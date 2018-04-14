@@ -1,6 +1,4 @@
 const Discord = require('discord.js');
-const DBL = require("dblapi.js");
-const dbl = new DBL('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5ODQxMzYzMDE0OTg4NTk1MiIsImJvdCI6dHJ1ZSwiaWF0IjoxNTIzMzMxNjMxfQ.IkPUhi4Pqj7SrBiF6Qg-wDum5qsGg9HVH08B1O6i0kU');
 const Sequelize = require('sequelize');
 const currencyDB = new Sequelize('database', 'username', 'password', {
     host: 'localhost',
@@ -46,6 +44,11 @@ module.exports = {
     ],
     // Function
     run: async (client, command, msg, args) => {
+        if(args[0] !== "heads" && args[0] !== "tails") return msg.channel.send({embed: {
+            title: ":x: Incorrect Usage",
+            description: "You need to enter either heads or tails!",
+            color: 0xff0000,
+        }});
         const user = await userInfo.findOne({
             where: {
               id: msg.author.id,

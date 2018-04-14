@@ -1,3 +1,4 @@
+
 const https = require('https');
 const url = 'https://www.reddit.com/r/deepfriedmemes/hot/.json?limit=100';
 const Discord = require('discord.js');

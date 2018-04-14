@@ -1,7 +1,7 @@
 // Import anything and everything required throughout the project
 // *****************************************************************************
 const Discord = require('discord.js');
-const snekfetch = require('snekfetch');
+// const snekfetch = require('snekfetch');
 const ytdl = require('ytdl-core');
 const Util = require('discord.js');
 // const YouTube = require('simple-youtube-api');
@@ -13,6 +13,7 @@ const https = require('https');
 const DBL = require('dblapi.js');
 const dbl = new DBL(process.env.DBL);
 process.on('unhandledRejection', console.error);
+
 
 // Setup Discord.js Client/Bot
 // *****************************************************************************
@@ -62,6 +63,13 @@ const sequelize = new Sequelize('database', 'username', 'password', {
   storage: 'database.sql',
 });
 
+const currencyDB = new Sequelize('database', 'username', 'password', {
+  host: 'localhost',
+  dialect: 'sqlite',
+  logging: false,
+  storage: 'currencysystem.sql',
+});
+
 
 // Setup Sound manager
 // *****************************************************************************
@@ -79,11 +87,33 @@ const Sounds = sequelize.define('sounds', {
   },
 });
 
+// Setup Currency System manager
+// *****************************************************************************
+const userInfo = currencyDB.define('userinfo', {
+  id: {
+    type: Sequelize.STRING,
+    primaryKey: true,
+  },
+  coins: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+    allowNull: false,
+  },
+  cmdsrun: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+    allowNull: false,
+  },
+  lastdaily: Sequelize.STRING,
+  user_name: Sequelize.STRING,
+});
+
 // Setup Client's events handlers
 // *****************************************************************************
 client.on('ready', () => {
-  // Setup Sound system
+  // Setup Sound and Currency system
   Sounds.sync();
+  userInfo.sync();
 
   // Setup Bot
   client.shard.broadcastEval('this.guilds.size').then(results => {
@@ -116,21 +146,44 @@ client.on('ready', () => {
     // }
 
     client.shard.broadcastEval('this.guilds.size').then(results => {
-      snekfetch.post('https://discordbots.org/api/bots/stats')
-        .set('Authorization', process.env.DBL)
-        .send({
-          server_count: `${results.reduce((prev, val) => prev + val, 0)}`,
-        })
-        .then(() => console.log('Updated discordbots.org stats.'))
-        .catch(err => console.error(`Whoops something went wrong: ${err.body}`));
+      dbl.postStats(results.reduce((prev, val) => prev + val, 0));
+      console.log("Updated discordbots.org stats.");
+      // snekfetch.post('https://discordbots.org/api/bots/stats')
+      //   .set('Authorization', process.env.DBL)
+      //   .send({
+      //     server_count: `${results.reduce((prev, val) => prev + val, 0)}`,
+      //   })
+      //   .then(() => console.log('Updated discordbots.org stats.'))
+      //   .catch(err => console.error(`Whoops something went wrong: ${err.body}`));
 
       client.user.setActivity(`${client.config.prefix} help | ${results.reduce((prev, val) => prev + val, 0)} servers`);
     });
   }, 600000);
 });
 
-client.on('message', msg => {
+client.on('message', async msg => {
   if (!msg.content.startsWith(client.config.prefix) || msg.author.bot) return;
+
+  // Cache data to userInfo database.
+  try {
+    const userinf = await userInfo.create({
+      id: msg.author.id,
+      user_name: `${msg.author.username}#${msg.author.discriminator}`,
+    });
+    
+  } catch (err) {
+    if (err.name !== 'SequelizeUniqueConstraintError') console.log(`Got an error: ${err}`);
+  }
+
+  const finduser = await userInfo.findOne({
+    where: {
+      id: msg.author.id,
+    }
+  });
+
+  if(finduser) {
+    finduser.increment('cmdsrun');
+  }
 
   // Convert input into command name & args
   const args = msg.content.slice(client.config.prefix.length + 1).split(/ +/);
@@ -202,6 +255,10 @@ client.on('message', msg => {
     msg.channel.send('There was an error in trying to execute that command!');
   }
 });
+
+// client.on('userUpdate', async () => {
+
+// });
 
 client.on('guildCreate', guild => {
   // Get channel in which bot is allowed to msg

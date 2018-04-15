@@ -3,7 +3,7 @@ var rp = require('request-promise');
 module.exports = {
   // Information
   name: 'reddit',
-  description: 'Server Sub-Reddits.',
+  description: 'Browse through Reddit via Discord.',
   usage: '<subreddit> <view>',
   explanation: {
     subreddit: {
@@ -16,6 +16,7 @@ module.exports = {
       options: ['hot', 'new'],
     }
   },
+  aliases: ['re'],
   // Requirements
   // Custom Data
   subreddits: [

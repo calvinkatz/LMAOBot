@@ -1,40 +1,61 @@
-const https = require('https');
+var rp = require('request-promise');
 
 module.exports = {
   // Information
   name: 'reddit',
   description: 'Server Sub-Reddits.',
-  usage: '<sub reddit> <sort> <order>',
+  usage: '<sub reddit> <view>',
   explanation: {
-    sort: {
-      description: 'Sort post.',
-      default: 'hot',
-      options: 'hot, new',
-    },
-    order: {
-      description: 'Order post.',
+    view: {
+      description: 'What sort of post to view.',
       default: 'random',
-      options: 'random, ordered',
-    },
+      options: ['random', 'hot', 'new', 'old'],
+    }
   },
   // Requirements
   // Function
-  run: (client, command, msg, args) => {
-    args = msg.content.slice(client.config.prefix.length + 1).split(/ +/);
-
-    let meme;
-    if (args[0] !== undefined && command.memes.indexOf(args[0].toLowerCase()) !== -1) {
-      meme = args[0].toLowerCase();
-    } else if (args[1] !== undefined && command.memes.indexOf(args[1].toLowerCase()) !== -1) {
-      meme = args[1].toLowerCase();
-    } else {
-      meme = command.memes[Math.floor(Math.random() * command.memes.length)];
+  run: async (client, command, msg, args) => {
+    let endpoint = 'random';
+    if (args.length > 0 && command.explanation.view.indexOf(args[0].toLowerCase()) !== -1) {
+      endpoint = args[0].toLowerCase();
     }
 
-    msg.channel.send({
-      files: [
-        `./img/${meme}.png`,
-      ],
+    const post = await command.get_post('deepfriedmemes', endpoint);
+
+    const reply = await msg.channel.send({
+      embed: {
+        color: 3447003,
+        author: {
+          name: client.user.username,
+          icon_url: client.user.avatarURL,
+        },
+        title: 'Reddit',
+        description: 'Browsing Reddit via Discord.',
+        // fields: [],
+        timestamp: new Date(),
+        footer: {
+          icon_url: client.user.avatarURL,
+          text: client.config.embed.footer,
+        },
+      },
     });
+
+    // Add reactions to reply
+    await reply.react('🔃');
   },
+  get_post: async (subreddit, endpoint) => {
+    url = `https://www.reddit.com/r/${subreddit}/${endpoint}.json?limit=100`;
+
+    console.log(url);
+
+    const data = JSON.parse(await rp(url));
+
+    // if () {
+    //
+    // } else {
+    //
+    // }
+
+    console.log(data);
+  }
 };

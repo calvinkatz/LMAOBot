@@ -19,6 +19,7 @@
     "https": "^1.0.0",
     "node-opus": "*",
     "npm": "^5.8.0",
+    "request-promise": "^4.2.2",
     "sequelize": "^4.37.6",
     "simple-youtube-api": "^5.0.1",
     "snekfetch": "^3.6.4",

@@ -23,6 +23,7 @@ const client = new Discord.Client({
 
 // Setup Client's configuration
 client.config = require('./configs/bot.json');
+client.reaction_msgs = new Discord.Collection();
 client.cooldowns = new Discord.Collection();
 
 // Setup Client's commands
@@ -52,6 +53,25 @@ for (const folder of command_folders) {
 client.is_developer = (id) => {
   return client.config.developer_ids.indexOf(id) > -1;
 };
+
+
+/**
+ * Adds a msg to reaction listening collection.
+ * @param {Object} [command] Object representing a bot's command.
+ * @param {String/Object} [message] Discord Message's id/ Discord Message object.
+ * @param {Array} [reactions] Array containing all Reactions to listen for.
+ * @param {Object} [options] Object containing options; options: timeout: integer/false, user_id: string
+ * @return {Boolean} True if added; else false.
+ */
+client.add_msg_reaction_listener = (command, message, reactions, options) => {};
+
+
+/**
+ * Adds a msg to reaction listening collection.
+ * @param {String/Object} [message] Discord Message's id/ Discord Message object.
+ * @return {Boolean} True if added; else false.
+ */
+client.remove_msg_reaction_listener = (message) => {};
 
 
 // Setup SQL database conneciton
@@ -123,38 +143,8 @@ client.on('ready', () => {
   console.log('Ready sir...');
 
   setInterval(async () => {
-    //     try {
-    //         let supportguild = client.shard.broadcastEval('client.guilds.get("399121674198581248")');
-    //         let role = "403490721421590529";
-    //         console.log("discordbots.org> Checking upvotes for roles.");
-    //         if(!supportguild) return console.log("discordbots.org> Error: Could not find supportguild");
-
-    //           supportguild.members.map(member => {
-    //             if (member.roles.has(role)) {
-    //               if (dbl.hasVoted(member.user.id) == false) {
-    //                 member.removeRole(role, "Removed upvote.")
-    //               }
-    //             } else {
-    //               if (dbl.hasVoted(member.user.id) == true) {
-    //                 member.addRole(role, "Added upvote.")
-    //               }
-    //             }
-    //           });
-
-    //     } catch (err) {
-    //       console.error('discordbots.org> Checking upvotes returned error: ' + err)
-    // }
-
     client.shard.broadcastEval('this.guilds.size').then(results => {
       dbl.postStats(results.reduce((prev, val) => prev + val, 0));
-      console.log("Updated discordbots.org stats.");
-      // snekfetch.post('https://discordbots.org/api/bots/stats')
-      //   .set('Authorization', process.env.DBL)
-      //   .send({
-      //     server_count: `${results.reduce((prev, val) => prev + val, 0)}`,
-      //   })
-      //   .then(() => console.log('Updated discordbots.org stats.'))
-      //   .catch(err => console.error(`Whoops something went wrong: ${err.body}`));
 
       client.user.setActivity(`${client.config.prefix} help | ${results.reduce((prev, val) => prev + val, 0)} servers`);
     });
@@ -170,7 +160,7 @@ client.on('message', async msg => {
       id: msg.author.id,
       user_name: `${msg.author.username}#${msg.author.discriminator}`,
     });
-    
+
   } catch (err) {
     if (err.name !== 'SequelizeUniqueConstraintError') console.log(`Got an error: ${err}`);
   }
@@ -181,7 +171,7 @@ client.on('message', async msg => {
     }
   });
 
-  if(finduser) {
+  if (finduser) {
     finduser.increment('cmdsrun');
   }
 
@@ -256,13 +246,52 @@ client.on('message', async msg => {
   }
 });
 
-// client.on('userUpdate', async () => {
 
-// });
+client.on('messageReactionAdd', (reaction, user) => {
+  if (user.client) return;
+
+  const msg = client.reaction_msgs.get(reaction.message.id);
+  if (!msg) return;
+  if (msg.time <= ((new Date() - msg.reply.createdAt) / 1000)) return client.reaction_msgs.delete(reaction.message.id);
+
+  if (msg.emojis.includes(reaction.emoji.name)) {
+    const command = client.commands.get(msg.command_name);
+    if (!command) return;
+
+    try {
+      command.on_reaction(client, msg, 'added', reaction);
+    } catch (error) {
+      console.error(error);
+      msg.channel.send('There was an error in trying to execute that command!');
+    }
+  }
+});
+
+
+client.on('messageReactionRemove', (reaction, user) => {
+  if (user.client) return;
+
+  const msg = client.reaction_msgs.get(reaction.message.id);
+  if (!msg) return;
+  if (msg.time <= ((new Date() - msg.reply.createdAt) / 1000)) return client.reaction_msgs.delete(reaction.message.id);
+
+  if (msg.emojis.includes(reaction.emoji.name)) {
+    const command = client.commands.get(msg.command_name);
+    if (!command) return;
+
+    try {
+      command.on_reaction(client, msg, 'removed', reaction);
+    } catch (error) {
+      console.error(error);
+      msg.channel.send('There was an error in trying to execute that command!');
+    }
+  }
+});
+
 
 client.on('guildCreate', guild => {
   // Get channel in which bot is allowed to msg
-  const default_channel = guild.channels.find(channel => channel.type === 'text' && channel.permissionsFor(guild.me).has('SEND_msgS'));
+  const default_channel = guild.channels.find(channel => channel.type === 'text' && channel.permissionsFor(guild.me).has('SEND_MESSAGES'));
   if (!default_channel) return;
 
   default_channel.send({

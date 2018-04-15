@@ -10,7 +10,7 @@ module.exports = {
 
       const commands = {};
       client.commands.forEach(function(command) {
-        if (['admin'].indexOf(command.category.toLowerCase()) !== -1) {
+        if (['admin'].includes(command.category.toLowerCase())) {
           return;
         } else if (!(command.category in commands)) {
           commands[command.category] = [];

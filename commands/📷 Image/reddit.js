@@ -37,7 +37,7 @@ module.exports = {
     }
 
     let endpoint = 'hot';
-    if (args.length >= 2 && command.explanation.view.indexOf(args[1].toLowerCase()) !== -1) {
+    if (args.length >= 2 && command.explanation.view.includes(args[1].toLowerCase())) {
       endpoint = args[1].toLowerCase();
     }
 
@@ -52,7 +52,7 @@ module.exports = {
     });
 
     await client.add_msg_reaction_listener(command, reply, ['⬅', '🔄', '➡'], {
-      data: {
+      extra: {
         subreddit: subreddit,
         endpoint: endpoint,
         index: index,
@@ -79,7 +79,28 @@ module.exports = {
       },
     };
   },
-  on_reaction: (client, msg, operation, reaction) => {
-    console.log('reaction!');
+  on_reaction: (client, command, data, operation, reaction) => {
+    if (reaction.emoji.name === '⬅') {
+      data.extra.index -= 1;
+    } else if (reaction.emoji.name === '🔄') {
+      data.extra.index = Math.floor(Math.random() * data.extra.posts.length);
+    } else if (reaction.emoji.name === '➡') {
+      data.extra.index += 1;
+    } else {
+      return;
+    }
+
+    if (data.extra.index < 0) {
+      data.extra.index = data.extra.post.length - 1;
+    } else if (data.extra.index > (data.extra.posts.length - 1)) {
+      data.extra.index = 0;
+    }
+
+    data.message.edit({
+      embed: command.post_embed(client, data.extra.posts[data.extra.index].data, {
+        subreddit: data.extra.subreddit,
+        endpoint: data.extra.endpoint,
+      }),
+    });
   }
 };

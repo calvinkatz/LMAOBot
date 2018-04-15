@@ -59,36 +59,36 @@ module.exports = {
       } else {
         const command = client.commands.get(args[0]) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
         if (!command) return;
-  
+
         // Setup fields
         const fields = [];
-  
+
         if ('args' in command && command.args.req === true) {
           fields.push({
             name: 'Argument Requirements',
             value: `Minimum: ${command.args.min}`,
           });
-      }
-
-      if ('explanation' in command) {
-        const field_id = fields.push({
-          name: 'Argument Information',
-          value: '',
-        });
-        for (const argument of Object.keys(command.explanation)) {
-          fields[field_id].value += `${argument} :`;
-          if ('default' in command.explanation[argument]) fields[field_id].value += ` ${command.explanation[argument].default}`;
-          if ('options' in command.explanation[argument]) fields[field_id].value += ` ${command.explanation[argument].options}`;
         }
-      }
-  
+
+        if ('explanation' in command) {
+          const field_id = fields.push({
+            name: 'Argument Information',
+            value: '',
+          });
+          for (const argument of Object.keys(command.explanation)) {
+            fields[field_id].value += `${argument} :`;
+            if ('default' in command.explanation[argument]) fields[field_id].value += ` ${command.explanation[argument].default}`;
+            if ('options' in command.explanation[argument]) fields[field_id].value += ` ${command.explanation[argument].options}`;
+          }
+        }
+
         const requirements = [];
         for (const requirement of ['dev_only', 'guild_only', 'cooldown']) {
           if (requirement in command) {
             requirements.push(requirement.replace('_', ' ') + ': ' + command[requirement]);
           }
         }
-  
+
         if (requirements.length > 0) {
           fields.push({
             name: 'Command Requirements',

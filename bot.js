@@ -212,29 +212,29 @@ client.on('message', async msg => {
 
   // Check whether command is on cooldown for user
   if ('cooldown' in command && command.cooldown >= 1) {
-    if (!client.cooldowns.has(command.name)) {
-      client.cooldowns.set(command.name, new Discord.Collection());
-    }
+    const data = client.cooldowns.get(`${command.name}:${msg.author.id}`);
 
-    const now = Date.now();
-    const timestamps = client.cooldowns.get(command.name);
-    const cooldown = (command.cooldown || 1) * 1000;
-
-    if (!timestamps.has(msg.author.id)) {
-      timestamps.set(msg.author.id, now);
-      return setTimeout(() => timestamps.delete(msg.author.id), cooldown);
-    } else if (now < timestamps.get(msg.author.id) + cooldown) {
-      return msg.channel.send({
-        embed: {
-          color: 0x2471a3,
-          title: ':x: Command On Cooldown!!!',
-          description: 'Please wait ' + (now - timestamps.get(msg.author.id)) / 1000 + ` second(s) before reusing the \`${command.name}\` command.`,
-        },
+    if (data === undefined) {
+      client.cooldowns.set(`${command.name}:${msg.author.id}`, {
+        command: command.name,
+        user: msg.author.id,
+        started: Date.now()
       });
-    }
+    } else {
+      const time_left = Math.round((command.cooldown - (Date.now() - data.started) / 1000) * 100) / 100;
 
-    timestamps.set(msg.author.id, now);
-    setTimeout(() => timestamps.delete(msg.author.id), cooldown);
+      if (time_left > 0) {
+        return msg.channel.send({
+          embed: {
+            color: 0x2471a3,
+            title: ':x: Command On Cooldown!!!',
+            description: `Please wait *${time_left} second(s)* before reusing the \`${command.name}\` command.`,
+          },
+        });
+      } else {
+        data.started = Date.now();
+      }
+    }
   }
 
 

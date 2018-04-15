@@ -27,7 +27,13 @@ module.exports = {
     'wholesomememes',
     'MemeEconomy',
     'BlackPeopleTwitter',
-    'shittyadviceanimals'
+    'shittyadviceanimals',
+    'ProgrammerHumor',
+    'oddlysatisfying',
+    'mildlyinfuriating',
+    'softwaregore',
+    'me_irl',
+    'mildlyinteresting'
   ],
   // Function
   run: async (client, command, msg, args) => {
@@ -42,7 +48,36 @@ module.exports = {
     }
 
     const posts = JSON.parse(await rp(`https://www.reddit.com/r/${subreddit}/${endpoint}.json?limit=100`)).data.children;
-    const index = Math.floor(Math.random() * posts.length);
+
+    let index = 0;
+    let checks = 0;
+    do {
+      if (checks >= 100) {
+        return msg.channel.send({
+          color: 0x00AE86,
+          author: {
+            name: client.user.username,
+            icon_url: client.user.avatarURL,
+          },
+          title: `r/${subreddit}/${endpoint}`,
+          description: `Nothing was found :confused:`,
+          timestamp: new Date(),
+          footer: {
+            icon_url: client.user.avatarURL,
+            text: client.config.embed.footer,
+          },
+        });
+      }
+      checks += 1;
+
+      index = Math.floor(Math.random() * posts.length);
+
+      if (index < 0) {
+        index = posts.length - 1;
+      } else if (index > (posts.length - 1)) {
+        index = 0;
+      }
+    } while (posts[index].data.over_18 && posts[index].data.preview.images.length <= 0);
 
     const reply = await msg.channel.send({
       embed: command.post_embed(client, posts[index].data, {
@@ -80,21 +115,40 @@ module.exports = {
     };
   },
   on_reaction: (client, command, data, operation, reaction) => {
-    if (reaction.emoji.name === '⬅') {
-      data.extra.index -= 1;
-    } else if (reaction.emoji.name === '🔄') {
-      data.extra.index = Math.floor(Math.random() * data.extra.posts.length);
-    } else if (reaction.emoji.name === '➡') {
-      data.extra.index += 1;
-    } else {
-      return;
-    }
+    let checks = 0;
+    do {
+      if (checks >= 100) {
+        return msg.channel.send({
+          color: 0x00AE86,
+          author: {
+            name: client.user.username,
+            icon_url: client.user.avatarURL,
+          },
+          title: `r/${subreddit}/${endpoint}`,
+          description: `Nothing was found :confused:`,
+          timestamp: new Date(),
+          footer: {
+            icon_url: client.user.avatarURL,
+            text: client.config.embed.footer,
+          },
+        });
+      }
+      checks += 1;
 
-    if (data.extra.index < 0) {
-      data.extra.index = data.extra.post.length - 1;
-    } else if (data.extra.index > (data.extra.posts.length - 1)) {
-      data.extra.index = 0;
-    }
+      if (reaction.emoji.name === '⬅') {
+        data.extra.index -= 1;
+      } else if (reaction.emoji.name === '🔄') {
+        data.extra.index = Math.floor(Math.random() * data.extra.posts.length);
+      } else if (reaction.emoji.name === '➡') {
+        data.extra.index += 1;
+      }
+
+      if (data.extra.index < 0) {
+        data.extra.index = data.extra.posts.length - 1;
+      } else if (data.extra.index > (data.extra.posts.length - 1)) {
+        data.extra.index = 0;
+      }
+    } while (data.extra.posts[data.extra.index].data.over_18 && data.extra.posts[data.extra.index].data.preview.images.length <= 0);
 
     data.message.edit({
       embed: command.post_embed(client, data.extra.posts[data.extra.index].data, {

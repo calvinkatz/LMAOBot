@@ -51,7 +51,7 @@ for (const folder of command_folders) {
  * @return {Boolean} True if it's a developer's id; false, if it's not.
  */
 client.is_developer = (id) => {
-  return client.config.developer_ids.indexOf(id) > -1;
+  return client.config.developer_ids.includes(id);
 };
 
 
@@ -66,7 +66,7 @@ client.is_developer = (id) => {
 client.add_msg_reaction_listener = async (command, message, reactions, options) => {
   options = Object.assign({
     time: 60,
-    data: {},
+    extra: {},
   }, options);
 
   for (let reaction of reactions) {
@@ -78,7 +78,7 @@ client.add_msg_reaction_listener = async (command, message, reactions, options) 
     emojis: reactions,
     command_name: command.name,
     message: message,
-    data: options.data,
+    extra: options.extra,
   });
 };
 
@@ -267,19 +267,19 @@ client.on('message', async msg => {
 client.on('messageReactionAdd', (reaction, user) => {
   if (user.bot) return;
 
-  const msg = client.reaction_msgs.get(reaction.message.id);
-  if (!msg) return;
-  if (msg.time <= ((Date.now() - msg.message.createdAt) / 1000)) return client.reaction_msgs.delete(reaction.message.id);
+  const data = client.reaction_msgs.get(reaction.message.id);
+  if (!data) return;
+  if (data.time <= ((Date.now() - data.message.createdAt) / 1000)) return client.reaction_msgs.delete(reaction.message.id);
 
-  if (msg.emojis.includes(reaction.emoji.name)) {
-    const command = client.commands.get(msg.command_name);
+  if (data.emojis.includes(reaction.emoji.name)) {
+    const command = client.commands.get(data.command_name);
     if (!command) return;
 
     try {
-      command.on_reaction(client, msg, 'added', reaction);
+      command.on_reaction(client, command, data, 'added', reaction);
     } catch (error) {
       console.error(error);
-      msg.channel.send('There was an error in trying to execute that command!');
+      data.message.channel.send('There was an error in trying to execute that command!');
     }
   }
 });
@@ -288,19 +288,19 @@ client.on('messageReactionAdd', (reaction, user) => {
 client.on('messageReactionRemove', (reaction, user) => {
   if (user.bot) return;
 
-  const msg = client.reaction_msgs.get(reaction.message.id);
-  if (!msg) return;
-  if (msg.time <= ((new Date() - msg.message.createdAt) / 1000)) return client.reaction_msgs.delete(reaction.message.id);
+  const data = client.reaction_msgs.get(reaction.message.id);
+  if (!data) return;
+  if (data.time <= ((new Date() - data.message.createdAt) / 1000)) return client.reaction_msgs.delete(reaction.message.id);
 
-  if (msg.emojis.includes(reaction.emoji.name)) {
-    const command = client.commands.get(msg.command_name);
+  if (data.emojis.includes(reaction.emoji.name)) {
+    const command = client.commands.get(data.command_name);
     if (!command) return;
 
     try {
-      command.on_reaction(client, msg, 'removed', reaction);
+      command.on_reaction(client, command, data, 'removed', reaction);
     } catch (error) {
       console.error(error);
-      msg.channel.send('There was an error in trying to execute that command!');
+      data.message.channel.send('There was an error in trying to execute that command!');
     }
   }
 });

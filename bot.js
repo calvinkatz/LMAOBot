@@ -63,7 +63,24 @@ client.is_developer = (id) => {
  * @param {Object} [options] Object containing options; options: timeout: integer/false, user_id: string
  * @return {Boolean} True if added; else false.
  */
-client.add_msg_reaction_listener = (command, message, reactions, options) => {};
+client.add_msg_reaction_listener = async (command, message, reactions, options) => {
+  options = Object.assign({
+    time: 60,
+    data: {},
+  }, options);
+
+  for (let reaction of reactions) {
+    await message.react(reaction);
+  }
+
+  client.reaction_msgs.set(message.id, {
+    time: options.time,
+    emojis: reactions,
+    command_name: command.name,
+    message: message,
+    data: options.data,
+  });
+};
 
 
 /**
@@ -248,11 +265,11 @@ client.on('message', async msg => {
 
 
 client.on('messageReactionAdd', (reaction, user) => {
-  if (user.client) return;
+  if (user.bot) return;
 
   const msg = client.reaction_msgs.get(reaction.message.id);
   if (!msg) return;
-  if (msg.time <= ((new Date() - msg.reply.createdAt) / 1000)) return client.reaction_msgs.delete(reaction.message.id);
+  if (msg.time <= ((Date.now() - msg.message.createdAt) / 1000)) return client.reaction_msgs.delete(reaction.message.id);
 
   if (msg.emojis.includes(reaction.emoji.name)) {
     const command = client.commands.get(msg.command_name);
@@ -269,11 +286,11 @@ client.on('messageReactionAdd', (reaction, user) => {
 
 
 client.on('messageReactionRemove', (reaction, user) => {
-  if (user.client) return;
+  if (user.bot) return;
 
   const msg = client.reaction_msgs.get(reaction.message.id);
   if (!msg) return;
-  if (msg.time <= ((new Date() - msg.reply.createdAt) / 1000)) return client.reaction_msgs.delete(reaction.message.id);
+  if (msg.time <= ((new Date() - msg.message.createdAt) / 1000)) return client.reaction_msgs.delete(reaction.message.id);
 
   if (msg.emojis.includes(reaction.emoji.name)) {
     const command = client.commands.get(msg.command_name);

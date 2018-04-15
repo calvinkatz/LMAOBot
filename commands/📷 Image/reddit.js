@@ -4,58 +4,82 @@ module.exports = {
   // Information
   name: 'reddit',
   description: 'Server Sub-Reddits.',
-  usage: '<sub reddit> <view>',
+  usage: '<subreddit> <view>',
   explanation: {
+    subreddit: {
+      description: 'Subreddit to pull post from.',
+      default: 'random'
+    },
     view: {
       description: 'What sort of post to view.',
-      default: 'random',
-      options: ['random', 'hot', 'new', 'old'],
+      default: 'hot',
+      options: ['hot', 'new', 'rising'],
     }
   },
   // Requirements
+  // Custom Data
+  subreddits: [
+    'dankmemes',
+    'fffffffuuuuuuuuuuuu',
+    'vertical',
+    'AdviceAnimals',
+    'Inglip',
+    'wholesomememes',
+    'MemeEconomy',
+    'BlackPeopleTwitter',
+    'shittyadviceanimals'
+  ],
   // Function
   run: async (client, command, msg, args) => {
-    let endpoint = 'random';
-    if (args.length > 0 && command.explanation.view.indexOf(args[0].toLowerCase()) !== -1) {
-      endpoint = args[0].toLowerCase();
+    let subreddit = command.subreddits[Math.floor(Math.random() * command.subreddits.length)];
+    if (args.length > 0) {
+      subreddit = args[0].toLowerCase();
     }
 
-    const post = await command.get_post('deepfriedmemes', endpoint);
+    let endpoint = 'hot';
+    if (args.length >= 2 && command.explanation.view.indexOf(args[1].toLowerCase()) !== -1) {
+      endpoint = args[1].toLowerCase();
+    }
+
+    const posts = JSON.parse(await rp(`https://www.reddit.com/r/${subreddit}/${endpoint}.json?limit=100`)).data.children;
+    const index = Math.floor(Math.random() * posts.length);
 
     const reply = await msg.channel.send({
-      embed: {
-        color: 3447003,
-        author: {
-          name: client.user.username,
-          icon_url: client.user.avatarURL,
-        },
-        title: 'Reddit',
-        description: 'Browsing Reddit via Discord.',
-        // fields: [],
-        timestamp: new Date(),
-        footer: {
-          icon_url: client.user.avatarURL,
-          text: client.config.embed.footer,
-        },
-      },
+      embed: command.post_embed(client, posts[index].data, {
+        subreddit: subreddit,
+        endpoint: endpoint,
+      }),
     });
 
-    // Add reactions to reply
-    await reply.react('🔃');
+    await client.add_msg_reaction_listener(command, reply, ['⬅', '🔄', '➡'], {
+      data: {
+        subreddit: subreddit,
+        endpoint: endpoint,
+        index: index,
+        posts: posts,
+      }
+    });
   },
-  get_post: async (subreddit, endpoint) => {
-    url = `https://www.reddit.com/r/${subreddit}/${endpoint}.json?limit=100`;
-
-    console.log(url);
-
-    const data = JSON.parse(await rp(url));
-
-    // if () {
-    //
-    // } else {
-    //
-    // }
-
-    console.log(data);
+  post_embed: (client, post, data) => {
+    return {
+      color: 0x00AE86,
+      author: {
+        name: client.user.username,
+        icon_url: client.user.avatarURL,
+      },
+      title: `r/${data.subreddit}/${data.endpoint}`,
+      description: `[${post.title}](https://reddit.com${post.permalink})\n${post.selftext}`,
+      image: {
+        url: post.preview.images[0].source.url,
+      },
+      timestamp: new Date(),
+      footer: {
+        icon_url: client.user.avatarURL,
+        text: client.config.embed.footer,
+      },
+    };
+  },
+  on_reaction: (client, msg, operation, reaction) => {
+    console.log('reaction!');
   }
 };

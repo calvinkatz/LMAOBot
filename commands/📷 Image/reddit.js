@@ -13,7 +13,7 @@ module.exports = {
     view: {
       description: 'What sort of post to view.',
       default: 'hot',
-      options: ['hot', 'new'],
+      options: ['hot', 'top', 'new', 'rising', 'controversial'],
     }
   },
   aliases: ['re'],
@@ -47,6 +47,8 @@ module.exports = {
     if (args.length >= 2 && command.explanation.view.options.includes(args[1].toLowerCase())) {
       endpoint = args[1].toLowerCase();
     }
+
+    const url = `https://www.reddit.com/r/${subreddit}/${endpoint}/`;
 
     let response;
     try {
@@ -125,6 +127,7 @@ module.exports = {
 
     const reply = await msg.channel.send({
       embed: command.post_embed(client, posts[index].data, {
+        url: url,
         subreddit: subreddit,
         endpoint: endpoint,
       }),
@@ -132,6 +135,7 @@ module.exports = {
 
     await client.add_msg_reaction_listener(command, reply, ['⬅', '🔄', '➡'], {
       extra: {
+        url: url,
         subreddit: subreddit,
         endpoint: endpoint,
         index: index,
@@ -147,6 +151,7 @@ module.exports = {
         icon_url: client.user.avatarURL,
       },
       title: `r/${data.subreddit}/${data.endpoint}`,
+      url: data.url,
       description: `[${post.title}](https://reddit.com${post.permalink})\n${post.selftext}`,
       image: {
         url: post.preview.images[0].source.url,
@@ -198,6 +203,7 @@ module.exports = {
 
     data.message.edit({
       embed: command.post_embed(client, data.extra.posts[data.extra.index].data, {
+        url: data.extra.url,
         subreddit: data.extra.subreddit,
         endpoint: data.extra.endpoint,
       }),

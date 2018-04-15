@@ -13,7 +13,7 @@ module.exports = {
     view: {
       description: 'What sort of post to view.',
       default: 'hot',
-      options: ['hot', 'new', 'rising'],
+      options: ['hot', 'new'],
     }
   },
   // Requirements
@@ -43,17 +43,37 @@ module.exports = {
     }
 
     let endpoint = 'hot';
-    if (args.length >= 2 && command.explanation.view.includes(args[1].toLowerCase())) {
+    if (args.length >= 2 && command.explanation.view.options.includes(args[1].toLowerCase())) {
       endpoint = args[1].toLowerCase();
     }
 
-    const posts = JSON.parse(await rp(`https://www.reddit.com/r/${subreddit}/${endpoint}.json?limit=100`)).data.children;
+    let response;
+    try {
+      response = await rp(`https://www.reddit.com/r/${subreddit}/${endpoint}.json?limit=100`);
+    } catch (error) {
+      return msg.channel.send({
+        embed: {
+          color: 0x00AE86,
+          author: {
+            name: client.user.username,
+            icon_url: client.user.avatarURL,
+          },
+          title: `r/${subreddit}/${endpoint}`,
+          description: `Subreddit was not found :confused:`,
+          timestamp: new Date(),
+          footer: {
+            icon_url: client.user.avatarURL,
+            text: client.config.embed.footer,
+          },
+        },
+      });
+    }
 
-    let index = 0;
-    let checks = 0;
-    do {
-      if (checks >= 100) {
-        return msg.channel.send({
+    const posts = JSON.parse(response).data.children;
+
+    if (posts.length === 0) {
+      return msg.channel.send({
+        embed: {
           color: 0x00AE86,
           author: {
             name: client.user.username,
@@ -66,6 +86,29 @@ module.exports = {
             icon_url: client.user.avatarURL,
             text: client.config.embed.footer,
           },
+        },
+      });
+    }
+
+    let index = 0;
+    let checks = 0;
+    do {
+      if (checks >= 100) {
+        return msg.channel.send({
+          embed: {
+            color: 0x00AE86,
+            author: {
+              name: client.user.username,
+              icon_url: client.user.avatarURL,
+            },
+            title: `r/${subreddit}/${endpoint}`,
+            description: `Nothing was found :confused:`,
+            timestamp: new Date(),
+            footer: {
+              icon_url: client.user.avatarURL,
+              text: client.config.embed.footer,
+            },
+          }
         });
       }
       checks += 1;
@@ -77,7 +120,7 @@ module.exports = {
       } else if (index > (posts.length - 1)) {
         index = 0;
       }
-    } while (posts[index].data.over_18 && posts[index].data.preview.images.length <= 0);
+    } while (posts[index].data.over_18 || !('preview' in posts[index].data) || posts[index].data.preview.images.length === 0);
 
     const reply = await msg.channel.send({
       embed: command.post_embed(client, posts[index].data, {
@@ -118,19 +161,21 @@ module.exports = {
     let checks = 0;
     do {
       if (checks >= 100) {
-        return msg.channel.send({
-          color: 0x00AE86,
-          author: {
-            name: client.user.username,
-            icon_url: client.user.avatarURL,
-          },
-          title: `r/${subreddit}/${endpoint}`,
-          description: `Nothing was found :confused:`,
-          timestamp: new Date(),
-          footer: {
-            icon_url: client.user.avatarURL,
-            text: client.config.embed.footer,
-          },
+        return data.message.edit({
+          embed: {
+            color: 0x00AE86,
+            author: {
+              name: client.user.username,
+              icon_url: client.user.avatarURL,
+            },
+            title: `r/${data.extra.subreddit}/${data.extra.endpoint}`,
+            description: `Nothing was found :confused:`,
+            timestamp: new Date(),
+            footer: {
+              icon_url: client.user.avatarURL,
+              text: client.config.embed.footer,
+            },
+          }
         });
       }
       checks += 1;
@@ -148,7 +193,7 @@ module.exports = {
       } else if (data.extra.index > (data.extra.posts.length - 1)) {
         data.extra.index = 0;
       }
-    } while (data.extra.posts[data.extra.index].data.over_18 && data.extra.posts[data.extra.index].data.preview.images.length <= 0);
+    } while (data.extra.posts[data.extra.index].data.over_18 || !('preview' in data.extra.posts[data.extra.index].data) || data.extra.posts[data.extra.index].data.preview.images.length === 0);
 
     data.message.edit({
       embed: command.post_embed(client, data.extra.posts[data.extra.index].data, {

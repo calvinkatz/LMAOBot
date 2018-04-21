@@ -1,4 +1,4 @@
-var rp = require('request-promise');
+const rp = require('request-promise');
 
 module.exports = {
   // Information
@@ -8,13 +8,13 @@ module.exports = {
   explanation: {
     subreddit: {
       description: 'Subreddit to pull post from.',
-      default: 'random'
+      default: 'random',
     },
     view: {
       description: 'What sort of post to view.',
       default: 'hot',
       options: ['hot', 'top', 'new', 'rising', 'controversial'],
-    }
+    },
   },
   aliases: ['re'],
   // Requirements
@@ -34,7 +34,7 @@ module.exports = {
     'mildlyinfuriating',
     'softwaregore',
     'me_irl',
-    'mildlyinteresting'
+    'mildlyinteresting',
   ],
   // Function
   run: async (client, command, msg, args) => {
@@ -62,7 +62,7 @@ module.exports = {
             icon_url: client.user.avatarURL,
           },
           title: `r/${subreddit}/${endpoint}`,
-          description: `Subreddit was not found :confused:`,
+          description: 'Subreddit was not found :confused:',
           timestamp: new Date(),
           footer: {
             icon_url: client.user.avatarURL,
@@ -83,7 +83,7 @@ module.exports = {
             icon_url: client.user.avatarURL,
           },
           title: `r/${subreddit}/${endpoint}`,
-          description: `Nothing was found :confused:`,
+          description: 'Nothing was found :confused:',
           timestamp: new Date(),
           footer: {
             icon_url: client.user.avatarURL,
@@ -105,13 +105,13 @@ module.exports = {
               icon_url: client.user.avatarURL,
             },
             title: `r/${subreddit}/${endpoint}`,
-            description: `Nothing was found :confused:`,
+            description: 'Nothing was found :confused:',
             timestamp: new Date(),
             footer: {
               icon_url: client.user.avatarURL,
               text: client.config.embed.footer,
             },
-          }
+          },
         });
       }
       checks += 1;
@@ -140,7 +140,7 @@ module.exports = {
         endpoint: endpoint,
         index: index,
         posts: posts,
-      }
+      },
     });
   },
   post_embed: (client, post, data) => {
@@ -175,13 +175,13 @@ module.exports = {
               icon_url: client.user.avatarURL,
             },
             title: `r/${data.extra.subreddit}/${data.extra.endpoint}`,
-            description: `Nothing was found :confused:`,
+            description: 'Nothing was found :confused:',
             timestamp: new Date(),
             footer: {
               icon_url: client.user.avatarURL,
               text: client.config.embed.footer,
             },
-          }
+          },
         });
       }
       checks += 1;
@@ -208,5 +208,5 @@ module.exports = {
         endpoint: data.extra.endpoint,
       }),
     });
-  }
+  },
 };

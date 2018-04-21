@@ -39,5 +39,6 @@ There are multiple ways to invite our bot to your servers!
 > npm install
 
 Once you've finished installing the node modules using the command above, you'll be able to run the bot!
-**NOTE: **We do not endorse self hosting the bot under any circumstances. We host the bot 24/7 on our servers.
+
+**NOTE:** We do not endorse self hosting the bot under any circumstances. We host the bot 24/7 on our servers.
 

@@ -23,6 +23,7 @@ const client = new Discord.Client({
 
 // Setup Client's configuration
 client.config = require('./configs/bot.json');
+client.reaction_msgs = new Discord.Collection();
 client.cooldowns = new Discord.Collection();
 
 // Setup Client's commands
@@ -50,8 +51,44 @@ for (const folder of command_folders) {
  * @return {Boolean} True if it's a developer's id; false, if it's not.
  */
 client.is_developer = (id) => {
-  return client.config.developer_ids.indexOf(id) > -1;
+  return client.config.developer_ids.includes(id);
 };
+
+
+/**
+ * Adds a msg to reaction listening collection.
+ * @param {Object} [command] Object representing a bot's command.
+ * @param {String/Object} [message] Discord Message's id/ Discord Message object.
+ * @param {Array} [reactions] Array containing all Reactions to listen for.
+ * @param {Object} [options] Object containing options; options: timeout: integer/false, user_id: string
+ * @return {Boolean} True if added; else false.
+ */
+client.add_msg_reaction_listener = async (command, message, reactions, options) => {
+  options = Object.assign({
+    time: 60,
+    extra: {},
+  }, options);
+
+  for (let reaction of reactions) {
+    await message.react(reaction);
+  }
+
+  client.reaction_msgs.set(message.id, {
+    time: options.time,
+    emojis: reactions,
+    command_name: command.name,
+    message: message,
+    extra: options.extra,
+  });
+};
+
+
+/**
+ * Adds a msg to reaction listening collection.
+ * @param {String/Object} [message] Discord Message's id/ Discord Message object.
+ * @return {Boolean} True if added; else false.
+ */
+client.remove_msg_reaction_listener = (message) => {};
 
 
 // Setup SQL database conneciton
@@ -123,38 +160,8 @@ client.on('ready', () => {
   console.log('Ready sir...');
 
   setInterval(async () => {
-    //     try {
-    //         let supportguild = client.shard.broadcastEval('client.guilds.get("399121674198581248")');
-    //         let role = "403490721421590529";
-    //         console.log("discordbots.org> Checking upvotes for roles.");
-    //         if(!supportguild) return console.log("discordbots.org> Error: Could not find supportguild");
-
-    //           supportguild.members.map(member => {
-    //             if (member.roles.has(role)) {
-    //               if (dbl.hasVoted(member.user.id) == false) {
-    //                 member.removeRole(role, "Removed upvote.")
-    //               }
-    //             } else {
-    //               if (dbl.hasVoted(member.user.id) == true) {
-    //                 member.addRole(role, "Added upvote.")
-    //               }
-    //             }
-    //           });
-
-    //     } catch (err) {
-    //       console.error('discordbots.org> Checking upvotes returned error: ' + err)
-    // }
-
     client.shard.broadcastEval('this.guilds.size').then(results => {
       dbl.postStats(results.reduce((prev, val) => prev + val, 0));
-      console.log("Updated discordbots.org stats.");
-      // snekfetch.post('https://discordbots.org/api/bots/stats')
-      //   .set('Authorization', process.env.DBL)
-      //   .send({
-      //     server_count: `${results.reduce((prev, val) => prev + val, 0)}`,
-      //   })
-      //   .then(() => console.log('Updated discordbots.org stats.'))
-      //   .catch(err => console.error(`Whoops something went wrong: ${err.body}`));
 
       client.user.setActivity(`${client.config.prefix} help | ${results.reduce((prev, val) => prev + val, 0)} servers`);
     });
@@ -170,7 +177,7 @@ client.on('message', async msg => {
       id: msg.author.id,
       user_name: `${msg.author.username}#${msg.author.discriminator}`,
     });
-    
+
   } catch (err) {
     if (err.name !== 'SequelizeUniqueConstraintError') console.log(`Got an error: ${err}`);
   }
@@ -181,7 +188,7 @@ client.on('message', async msg => {
     }
   });
 
-  if(finduser) {
+  if (finduser) {
     finduser.increment('cmdsrun');
   }
 
@@ -222,29 +229,29 @@ client.on('message', async msg => {
 
   // Check whether command is on cooldown for user
   if ('cooldown' in command && command.cooldown >= 1) {
-    if (!client.cooldowns.has(command.name)) {
-      client.cooldowns.set(command.name, new Discord.Collection());
-    }
+    const data = client.cooldowns.get(`${command.name}:${msg.author.id}`);
 
-    const now = Date.now();
-    const timestamps = client.cooldowns.get(command.name);
-    const cooldown = (command.cooldown || 1) * 1000;
-
-    if (!timestamps.has(msg.author.id)) {
-      timestamps.set(msg.author.id, now);
-      return setTimeout(() => timestamps.delete(msg.author.id), cooldown);
-    } else if (now < timestamps.get(msg.author.id) + cooldown) {
-      return msg.channel.send({
-        embed: {
-          color: 0x2471a3,
-          title: ':x: Command On Cooldown!!!',
-          description: 'Please wait ' + (now - timestamps.get(msg.author.id)) / 1000 + ` second(s) before reusing the \`${command.name}\` command.`,
-        },
+    if (data === undefined) {
+      client.cooldowns.set(`${command.name}:${msg.author.id}`, {
+        command: command.name,
+        user: msg.author.id,
+        started: Date.now()
       });
-    }
+    } else {
+      const time_left = Math.round((command.cooldown - (Date.now() - data.started) / 1000) * 100) / 100;
 
-    timestamps.set(msg.author.id, now);
-    setTimeout(() => timestamps.delete(msg.author.id), cooldown);
+      if (time_left > 0) {
+        return msg.channel.send({
+          embed: {
+            color: 0x2471a3,
+            title: ':x: Command On Cooldown!!!',
+            description: `Please wait *${time_left} second(s)* before reusing the \`${command.name}\` command.`,
+          },
+        });
+      } else {
+        data.started = Date.now();
+      }
+    }
   }
 
 
@@ -256,13 +263,52 @@ client.on('message', async msg => {
   }
 });
 
-// client.on('userUpdate', async () => {
 
-// });
+client.on('messageReactionAdd', (reaction, user) => {
+  if (user.bot) return;
+
+  const data = client.reaction_msgs.get(reaction.message.id);
+  if (!data) return;
+  if (data.time <= ((Date.now() - data.message.createdAt) / 1000)) return client.reaction_msgs.delete(reaction.message.id);
+
+  if (data.emojis.includes(reaction.emoji.name)) {
+    const command = client.commands.get(data.command_name);
+    if (!command) return;
+
+    try {
+      command.on_reaction(client, command, data, 'added', reaction);
+    } catch (error) {
+      console.error(error);
+      data.message.channel.send('There was an error in trying to execute that command!');
+    }
+  }
+});
+
+
+client.on('messageReactionRemove', (reaction, user) => {
+  if (user.bot) return;
+
+  const data = client.reaction_msgs.get(reaction.message.id);
+  if (!data) return;
+  if (data.time <= ((new Date() - data.message.createdAt) / 1000)) return client.reaction_msgs.delete(reaction.message.id);
+
+  if (data.emojis.includes(reaction.emoji.name)) {
+    const command = client.commands.get(data.command_name);
+    if (!command) return;
+
+    try {
+      command.on_reaction(client, command, data, 'removed', reaction);
+    } catch (error) {
+      console.error(error);
+      data.message.channel.send('There was an error in trying to execute that command!');
+    }
+  }
+});
+
 
 client.on('guildCreate', guild => {
   // Get channel in which bot is allowed to msg
-  const default_channel = guild.channels.find(channel => channel.type === 'text' && channel.permissionsFor(guild.me).has('SEND_msgS'));
+  const default_channel = guild.channels.find(channel => channel.type === 'text' && channel.permissionsFor(guild.me).has('SEND_MESSAGES'));
   if (!default_channel) return;
 
   default_channel.send({

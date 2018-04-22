@@ -4,6 +4,7 @@ module.exports = {
   aliases: ['fb'],
   description: 'Give feedback on LMAOBot.',
   // Requirements
+  cooldown: 300,
   // Function
   run: async (client, command, msg, args) => {
     try {

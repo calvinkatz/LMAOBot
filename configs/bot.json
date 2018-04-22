@@ -5,5 +5,12 @@
 	},
 	"developers": ["Pete#4164", "Dim#4657", "Clark thy Lord#7042", "NumerX#4587"],
 	"developer_ids": ["223919574536552449", "219204779426054146", "198255568882761728", "199810482574458881"],
-	"support_server": "https://discordapp.com/invite/aQ25yFy"
+	"support_server": "https://discordapp.com/invite/aQ25yFy",
+	"support": {
+		"id": "399121674198581248",
+		"feedback": "437533042685378564"
+	},
+	"emojis": {
+		"info": "<:info:437215503342370837>"
+	}
 }

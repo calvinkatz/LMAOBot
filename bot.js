@@ -69,7 +69,7 @@ client.add_msg_reaction_listener = async (command, message, reactions, options) 
     extra: {},
   }, options);
 
-  for (let reaction of reactions) {
+  for (const reaction of reactions) {
     await message.react(reaction);
   }
 
@@ -185,7 +185,7 @@ client.on('message', async msg => {
   const finduser = await userInfo.findOne({
     where: {
       id: msg.author.id,
-    }
+    },
   });
 
   if (finduser) {
@@ -235,7 +235,7 @@ client.on('message', async msg => {
       client.cooldowns.set(`${command.name}:${msg.author.id}`, {
         command: command.name,
         user: msg.author.id,
-        started: Date.now()
+        started: Date.now(),
       });
     } else {
       const time_left = Math.round((command.cooldown - (Date.now() - data.started) / 1000) * 100) / 100;

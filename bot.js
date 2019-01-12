@@ -100,14 +100,6 @@ const sequelize = new Sequelize('database', 'username', 'password', {
   storage: 'database.sql',
 });
 
-const currencyDB = new Sequelize('database', 'username', 'password', {
-  host: 'localhost',
-  dialect: 'sqlite',
-  logging: false,
-  storage: 'currencysystem.sql',
-});
-
-
 // Setup Sound manager
 // *****************************************************************************
 const Sounds = sequelize.define('sounds', {
@@ -122,27 +114,6 @@ const Sounds = sequelize.define('sounds', {
     defaultValue: 0,
     allowNull: false,
   },
-});
-
-// Setup Currency System manager
-// *****************************************************************************
-const userInfo = currencyDB.define('userinfo', {
-  id: {
-    type: Sequelize.STRING,
-    primaryKey: true,
-  },
-  coins: {
-    type: Sequelize.INTEGER,
-    defaultValue: 0,
-    allowNull: false,
-  },
-  cmdsrun: {
-    type: Sequelize.INTEGER,
-    defaultValue: 0,
-    allowNull: false,
-  },
-  lastdaily: Sequelize.STRING,
-  user_name: Sequelize.STRING,
 });
 
 // Setup Client's events handlers

@@ -42,3 +42,10 @@ Once you've finished installing the node modules using the command above, you'll
 
 **NOTE:** We do not endorse self hosting the bot under any circumstances. We host the bot 24/7 on our servers.
 
+# CK - Changes
+
+~~~~
+npm install
+npm install bufferutil erlpack@discordapp/erlpack node-opus opusscript sodium libsodium-wrappers uws
+npm audit fix
+~~~~

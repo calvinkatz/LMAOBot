@@ -50,7 +50,7 @@ module.exports = {
           .setDescription(`[${title}](${link_to_post})`)
           .setURL(`https://reddit.com/${subredditname}`);
         msg.channel.send(imageembed);
-      }).on('error', function(e) {
+      }).on('error', function (e) {
         console.log('Got an error: ', e);
       });
     });

@@ -88,7 +88,7 @@ client.add_msg_reaction_listener = async (command, message, reactions, options) 
  * @param {String/Object} [message] Discord Message's id/ Discord Message object.
  * @return {Boolean} True if added; else false.
  */
-client.remove_msg_reaction_listener = (message) => {};
+client.remove_msg_reaction_listener = (message) => { };
 
 
 // Setup SQL database conneciton

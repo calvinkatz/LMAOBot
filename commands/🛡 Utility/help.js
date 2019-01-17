@@ -9,7 +9,7 @@ module.exports = {
     if (!args.length) {
 
       const commands = {};
-      client.commands.forEach(function(command) {
+      client.commands.forEach(function (command) {
         if (['admin'].includes(command.category.toLowerCase())) {
           return;
         } else if (!(command.category in commands)) {

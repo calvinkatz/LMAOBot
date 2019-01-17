@@ -14,7 +14,7 @@ Developed in Node.js and run by memes, this bot is the dankest thing around!
 You can contact us, the developers, in our support server:
 
 * [Support Server](https://discordapp.com/invite/aQ25yFy)
-	
+
 # Inviting The Bot
 
 There are multiple ways to invite our bot to your servers!
@@ -22,7 +22,7 @@ There are multiple ways to invite our bot to your servers!
 * [Direct](https://discordapp.com/oauth2/authorize/?permissions=1341643969&scope=bot&client_id=398413630149885952)
 * [DiscordBots.org](https://discordbots.org/bot/398413630149885952)
 
-	
+
 # Contributing
 
 > Fork, edit and commit!

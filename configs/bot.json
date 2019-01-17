@@ -1,10 +1,20 @@
 {
-	"prefix" : "lmao",
-	"embed" : {
-		"footer": "Support us @ patreon.com/lmaobot"
+	"prefix": "lmao",
+	"embed": {
+		"footer": ""
 	},
-	"developers": ["Pete#4164", "Dim#4657", "Clark thy Lord#7042", "NumerX#4587"],
-	"developer_ids": ["223919574536552449", "219204779426054146", "198255568882761728", "199810482574458881"],
+	"developers": [
+		"Pete#4164",
+		"Dim#4657",
+		"Clark thy Lord#7042",
+		"NumerX#4587"
+	],
+	"developer_ids": [
+		"223919574536552449",
+		"219204779426054146",
+		"198255568882761728",
+		"199810482574458881"
+	],
 	"support_server": "https://discordapp.com/invite/aQ25yFy",
 	"support": {
 		"id": "399121674198581248",

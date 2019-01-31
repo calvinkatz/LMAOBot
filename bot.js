@@ -121,7 +121,7 @@ const Sounds = sequelize.define('sounds', {
 client.on('ready', () => {
   // Setup Sound and Currency system
   Sounds.sync();
-  userInfo.sync();
+  // userInfo.sync();
 
   // Setup Bot
   client.shard.broadcastEval('this.guilds.size').then(results => {
@@ -143,25 +143,25 @@ client.on('message', async msg => {
   if (!msg.content.startsWith(client.config.prefix) || msg.author.bot) return;
 
   // Cache data to userInfo database.
-  try {
-    const userinf = await userInfo.create({
-      id: msg.author.id,
-      user_name: `${msg.author.username}#${msg.author.discriminator}`,
-    });
+  // try {
+  //   const userinf = await userInfo.create({
+  //     id: msg.author.id,
+  //     user_name: `${msg.author.username}#${msg.author.discriminator}`,
+  //   });
 
-  } catch (err) {
-    if (err.name !== 'SequelizeUniqueConstraintError') console.log(`Got an error: ${err}`);
-  }
+  // } catch (err) {
+  //   if (err.name !== 'SequelizeUniqueConstraintError') console.log(`Got an error: ${err}`);
+  // }
 
-  const finduser = await userInfo.findOne({
-    where: {
-      id: msg.author.id,
-    },
-  });
+  // const finduser = await userInfo.findOne({
+  //   where: {
+  //     id: msg.author.id,
+  //   },
+  // });
 
-  if (finduser) {
-    finduser.increment('cmdsrun');
-  }
+  // if (finduser) {
+  //   finduser.increment('cmdsrun');
+  // }
 
   // Convert input into command name & args
   const args = msg.content.slice(client.config.prefix.length + 1).split(/ +/);

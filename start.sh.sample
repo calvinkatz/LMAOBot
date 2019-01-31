@@ -1,0 +1,3 @@
+#!/bin/bash
+
+TOKEN=xxxxxx pm2 start index.js

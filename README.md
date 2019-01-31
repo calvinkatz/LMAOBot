@@ -46,13 +46,14 @@ Once you've finished installing the node modules using the command above, you'll
 
 Ubuntu 18.04
 
-apt-get install nginx build-essential autoconf libtool
+apt-get install nginx build-essential autoconf libtool sqlite3
 
 ~~~~
 npm install node-gyp-build
 npm install
-npm install bufferutil erlpack@discordapp/erlpack node-opus opusscript sodium libsodium-wrappers uws
+npm install sqlite3 bufferutil erlpack@discordapp/erlpack node-opus opusscript sodium libsodium-wrappers uws
 npm audit fix
 ~~~~
 
+Edit start.sh
 Set environment variable TOKEN to bot auth token.

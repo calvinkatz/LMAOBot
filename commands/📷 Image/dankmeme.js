@@ -19,8 +19,19 @@ module.exports = {
 
             res.on('end', () => {
                 var response = JSON.parse(body);
-                var index = response.data.children[Math.floor(Math.random() * 99) + 1].data;
-                if (index.post_hint !== "image") {
+                var index = null;
+                var counter = 0;
+                do {
+                    counter++;
+                    index = response.data.children[Math.floor(Math.random() * 99) + 1].data;
+                }
+                while (index.post_hint !== "image" && counter < 10)
+
+                var title = index.title;
+                var link_to_post = "https://reddit.com" + index.permalink;
+                var subredditname = index.subreddit_name_prefixed;
+
+                if (counter >= 10) {
                     var text = index.selftext;
                     const textembed = new Discord.RichEmbed()
                         .setTitle(subredditname)
@@ -30,26 +41,17 @@ module.exports = {
 
                     msg.channel.send(textembed);
                 }
-                var image = index.preview.images[0].source.url
-                var title = index.title;
-                var link_to_post = "https://reddit.com" + index.permalink;
-                var subredditname = index.subreddit_name_prefixed;
-                if (index.post_hint !== "image") {
-                    const textembed = new Discord.RichEmbed()
+                else {
+                    var image = index.preview.images[0].source.url
+                    const imageembed = new Discord.RichEmbed()
                         .setTitle(subredditname)
+                        .setImage(image)
                         .setColor(0x00AE86)
-                        .setDescription(`[${title}](${link_to_post})\n\n${text}`)
+                        .setDescription(`[${title}](${link_to_post})`)
                         .setURL(`https://reddit.com/${subredditname}`);
 
-                    msg.channel.send(textembed);
+                    msg.channel.send(imageembed);
                 }
-                const imageembed = new Discord.RichEmbed()
-                    .setTitle(subredditname)
-                    .setImage(image)
-                    .setColor(0x00AE86)
-                    .setDescription(`[${title}](${link_to_post})`)
-                    .setURL(`https://reddit.com/${subredditname}`);
-                msg.channel.send(imageembed);
             }).on('error', function (e) {
                 console.log("Got an error: ", e);
             })

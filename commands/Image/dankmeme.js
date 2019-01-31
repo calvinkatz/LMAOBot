@@ -25,7 +25,7 @@ module.exports = {
                     counter++;
                     index = response.data.children[Math.floor(Math.random() * 99) + 1].data;
                 }
-                while (index.post_hint !== "image" && counter < 10)
+                while (index.post_hint != "image" && counter < 10)
 
                 var title = index.title;
                 var link_to_post = "https://reddit.com" + index.permalink;
@@ -42,7 +42,7 @@ module.exports = {
                     msg.channel.send(textembed);
                 }
                 else {
-                    var image = index.preview.images[0].source.url
+                    var image = index.url
                     const imageembed = new Discord.RichEmbed()
                         .setTitle(subredditname)
                         .setImage(image)

@@ -18,6 +18,7 @@
     "discord.js": "^11.4.2",
     "erlpack": "github:discordapp/erlpack",
     "express": "^4.16.4",
+    "ffmpeg": "0.0.4",
     "https": "^1.0.0",
     "libsodium-wrappers": "^0.7.4",
     "node-opus": "^0.3.1",

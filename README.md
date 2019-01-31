@@ -49,3 +49,5 @@ npm install
 npm install bufferutil erlpack@discordapp/erlpack node-opus opusscript sodium libsodium-wrappers uws
 npm audit fix
 ~~~~
+
+Set environment variable TOKEN to bot auth token.

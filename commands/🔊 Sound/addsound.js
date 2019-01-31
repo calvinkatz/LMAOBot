@@ -41,7 +41,7 @@ module.exports = {
       soundURL = args[1];
 
     // Check that sound name is valid
-    if (['nigger'].includes(soundName.toLowerCase())) return msg.channel.send(' :x: Sorry, invalid sound name!');
+    // if (['nigger'].includes(soundName.toLowerCase())) return msg.channel.send(' :x: Sorry, invalid sound name!');
 
     // Check that youtube url is valid
     if (!soundURL.includes('youtube.com/watch?')) return msg.channel.send(' :x: Invalid YouTube URL!');

@@ -6,7 +6,7 @@ const ytdl = require('ytdl-core');
 const Util = require('discord.js');
 // const YouTube = require('simple-youtube-api');
 // const youtube = new YouTube(process.env.YOUTUBE);
-const voteapi = 'https://discordbots.org/api/bots/398413630149885952/votes?onlyids=true';
+// const voteapi = 'https://discordbots.org/api/bots/398413630149885952/votes?onlyids=true';
 const Sequelize = require('sequelize');
 const fs = require('fs');
 const https = require('https');

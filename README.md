@@ -44,7 +44,12 @@ Once you've finished installing the node modules using the command above, you'll
 
 # CK - Changes
 
+Ubuntu 18.04
+
+apt-get install nginx build-essential autoconf libtool
+
 ~~~~
+npm install node-gyp-build
 npm install
 npm install bufferutil erlpack@discordapp/erlpack node-opus opusscript sodium libsodium-wrappers uws
 npm audit fix

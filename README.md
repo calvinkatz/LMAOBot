@@ -46,23 +46,36 @@ Once you've finished installing the node modules using the command above, you'll
 
 Ubuntu 18.04
 
-apt-get install nginx build-essential autoconf libtool sqlite3 ffmpeg
+apt-get install build-essential autoconf libtool sqlite3 ffmpeg
 
 As root
 ~~~~~
 npm install pm2@latest -g
 ~~~~~
 
+Create lmaobot user with a home directory. Add user to sudoers.
+Impersinate lmaobot:
 ~~~~
 npm install node-gyp-build
 npm install
 npm install sqlite3 ffmpeg bufferutil erlpack@discordapp/erlpack node-opus opusscript sodium libsodium-wrappers uws
-npm audit fix
+cp start.sh.sample start.sh
 ~~~~
 
 Edit start.sh
 Set environment variable TOKEN to bot auth token.
-Start using script
+Start using script.
 
+~~~~
 pm2 save
 pm2 startup
+~~~~
+
+Run command outputed by 'pm2 startup'
+Reboot
+
+~~~~
+systemctl status pm2-lmaobot
+~~~~
+
+Service should be running.

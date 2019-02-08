@@ -11,9 +11,11 @@ Developed in Node.js
 	* [Node.js](https://nodejs.org/en/)
 	* [Python 2.7*](https://www.python.org/)
 
-2. Insall dependencies.
+2. Install dependencies.
 
-> apt-get install build-essential autoconf libtool sqlite3 ffmpeg
+```sh
+apt-get install build-essential autoconf libtool sqlite3 ffmpeg
+```
 
 3. Install pm2 for startup control.
 

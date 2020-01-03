@@ -1,29 +1,52 @@
-LMAOBot
-=======
+# LMAOBot
 
-# About
+## About
 
 Developed in Node.js
 
-# Running The Bot
-1. You'll need to setup Node.js, and Python 2.7+!
+## Running The Bot
 
-	* [Node.js](https://nodejs.org/en/)
-	* [Python 2.7*](https://www.python.org/)
+You'll need to setup Node.js, and Python 2.7+!
 
-2. Install dependencies.
+* [Node.js](https://nodejs.org/en/)
+* [Python 2.7*](https://www.python.org/)
+
+Install dependencies:
 
 ```sh
-apt-get install build-essential autoconf libtool sqlite3 ffmpeg
+# Ubuntu
+apt-get install build-essential autoconf libtool sqlite3 ffmpeg git
+
+# CentOS
+rpm -v --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+yum install -y autoconf gcc-c++ libtool git make ffmpeg
 ```
 
-3. Install pm2 for startup control.
+Install pm2 for startup control:
 
 ```sh
 npm install pm2@latest -g
 ```
 
-4. In the project's directory:
+Download the bot:
+
+```sh
+cd /opt
+git clone https://github.com/calvinkatz/LMAOBot.git
+```
+
+Add user and setup permissions:
+
+```sh
+useradd -r -m lmaobot
+chown -R lmaobot:lmaobot /opt/LMAOBot
+chmod 664 /opt/LMAOBot/database.sql
+su - lmaobot
+cd /opt/LMAOBot
+```
+
+In the project's directory:
 
 ```sh
 npm install node-gyp-build
@@ -31,21 +54,22 @@ npm install
 npm install sqlite3 ffmpeg bufferutil erlpack@discordapp/erlpack node-opus opusscript sodium libsodium-wrappers uws
 cp start.sh.sample start.sh
 ```
-5. Edit start.sh. Set TOKEN to your bot auth token.
 
-6. Run start.sh
+Edit *start.sh* and set TOKEN to your bot auth token then run the script.
 
-```sh
-./start.sh
-```
-
-7. Use pm2 to save the service config and generate the startup script.
+Use pm2 to save the service config and generate the startup script:
 
 ```sh
 pm2 save
 pm2 startup
 ```
 
-8. Take the output section from 'pm2 startup' and run in the terminal.
+Take the output section from 'pm2 startup' and run in the terminal.
 
 The service should be running and enabled for automatic start at boot.
+
+Exclude the database from updates:
+
+```sh
+git update-index --assume-unchanged database.sql
+```

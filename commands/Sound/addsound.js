@@ -40,11 +40,8 @@ module.exports = {
     const soundName = args[0],
       soundURL = args[1];
 
-    // Check that sound name is valid
-    // if (['nigger'].includes(soundName.toLowerCase())) return msg.channel.send(' :x: Sorry, invalid sound name!');
-
     // Check that youtube url is valid
-    if (!soundURL.includes('youtube.com/watch?')) return msg.channel.send(' :x: Invalid YouTube URL!');
+    if (!soundURL.includes('youtube.com/watch?' || 'youtu.be/')) return msg.channel.send(' :x: Invalid YouTube URL!');
     if (soundURL.includes('list' || 'playlist')) return msg.channel.send(' :x: Nice try, you can\'t add a playlists!');
 
     // Extract info from youtube url
@@ -52,7 +49,6 @@ module.exports = {
       if (info.length_seconds > 60) {
         return msg.channel.send(' :x: You cannot add sounds longer than 1 minute!');
       }
-
       try {
         const sound = await Sounds.create({
           name: soundName,
@@ -62,6 +58,10 @@ module.exports = {
 
         return msg.channel.send(` sound **${sound.name}** added!`);
       } catch (e) {
+        console.log("Error occured:");
+        console.log(e.name);
+        console.log(e.message);
+        console.log(e.stack);
         if (e.name === 'SequelizeUniqueConstraintError') return msg.channel.send(' that sound already exists!');
         return msg.channel.send(' something went wrong while adding the sound: ```' + error + '```Join the support server for help on this issue.');
       }

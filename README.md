@@ -17,11 +17,18 @@ Install dependencies:
 # Ubuntu
 apt-get install build-essential autoconf libtool sqlite3 ffmpeg git
 
-# CentOS
+# CentOS 7
 rpm -v --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
 rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
 yum install -y autoconf gcc-c++ libtool git make ffmpeg
+
+# CentOS 8
+dnf install epel-release dnf-utils
+yum-config-manager --set-enabled PowerTools
+yum-config-manager --add-repo=https://negativo17.org/repos/epel-multimedia.repo
+dnf install -y autoconf gcc-c++ libtool git make ffmpeg
 ```
+
 
 Install pm2 for startup control:
 
